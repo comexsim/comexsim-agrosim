@@ -82,3 +82,22 @@
     display: none;
   }
 }
+
+/* En el celular, los indicadores bajan a una segunda fila en lugar de apretarse. */
+@media (max-width: 600px) {
+  .bar {
+    flex-wrap: wrap;
+    height: auto;
+    row-gap: 6px;
+    padding: 8px 12px;
+  }
+
+  .middle {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .middle:empty {
+    display: none;
+  }
+}
