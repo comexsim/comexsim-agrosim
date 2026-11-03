@@ -1,0 +1,157 @@
+/*
+ * Tokens de SIMA · AgroSim: la paleta del Laboratorio Virtual de la UPSA (verde selva y dorado,
+ * crema en claro y casi negro verdoso en oscuro) y los colores naturales del mundo 3D.
+ * Los componentes usan solo estos nombres, nunca hex sueltos.
+ */
+:root,
+:root[data-theme="light"] {
+  --bg: #f2f5f2;
+  --bg-raised: #ffffff;
+  --bg-sunken: #e8efea;
+  --surface: rgb(255 255 255 / 0.94);
+  --surface-2: #f7faf7;
+  --surface-3: #eef3ef;
+  --border: #d6e0da;
+  --border-strong: #b9c9bf;
+  --fg: #1a2421;
+  --text: #1a2421;
+  --text-2: #33433d;
+  --muted: #5b6a63;
+  --primary: #015941;
+  --primary-hover: #00462f;
+  --primary-soft: #e1ede6;
+  --on-primary: #ffffff;
+  --gold: #b8913a;
+  --gold-soft: #f6eedb;
+  --success: #157a3e;
+  --success-soft: #e5f4ea;
+  --warning: #9a6a00;
+  --warning-soft: #fbf1d9;
+  --danger: #b4321f;
+  --danger-soft: #fbe9e5;
+  --track: #dde6e0;
+  --shadow: 0 1px 2px rgb(16 40 30 / 0.06), 0 12px 32px rgb(16 40 30 / 0.12);
+  --scene-bg: #cfe6f5;
+
+  --ag-world-sky: #cfe6f5;
+  --ag-world-horizon: #eef4f0;
+  --ag-world-light: #fff3df;
+  --ag-world-mine: #015941;
+  --ag-world-alert: #d29a2b;
+  --ag-world-soil: #9a7452;
+  --ag-world-soil-wet: #6e5038;
+  --ag-world-soil-plowed: #7d5a3d;
+  --ag-world-straw: #d2bf8a;
+  --ag-world-grass: #a9c48d;
+  --ag-world-foliage: #4f9a5c;
+  --ag-world-foliage-2: #7cb35b;
+  --ag-world-trunk: #7a5a3c;
+  --ag-world-crop-young: #8fcf6a;
+  --ag-world-crop: #4fa04a;
+  --ag-world-crop-deep: #2f7d3a;
+  --ag-world-flower: #c9a6e0;
+  --ag-world-crop-yellow: #d9c45a;
+  --ag-world-crop-dry: #a8834f;
+  --ag-world-weed: #6b8f2a;
+  --ag-world-pest: #c0532f;
+  --ag-world-water: #4f95c4;
+  --ag-world-gravel: #cfc6b4;
+  --ag-world-asphalt: #5a6068;
+  --ag-world-paint: #f2efe6;
+  --ag-world-wall: #ece5d6;
+  --ag-world-wall-2: #c9b79b;
+  --ag-world-roof: #b65a41;
+  --ag-world-roof-metal: #9aa9b5;
+  --ag-world-steel: #a3abb2;
+  --ag-world-glass: #6c9cbd;
+  --ag-world-window: #ffd98a;
+  --ag-world-dark: #2c3138;
+  --ag-world-contractor: #e0a72e;
+  --ag-world-truck: #c4463a;
+  --ag-world-grain: #e6c770;
+  --ag-world-skin: #e2b48c;
+  --ag-world-shirt: #2f6690;
+  color-scheme: light;
+}
+
+:root[data-theme="dark"] {
+  --bg: #050a08;
+  --bg-raised: #0b1512;
+  --bg-sunken: #0f1c18;
+  --surface: rgb(11 21 18 / 0.93);
+  --surface-2: #0f1c18;
+  --surface-3: #132420;
+  --border: #18332b;
+  --border-strong: #24473c;
+  --fg: #ecf5f0;
+  --text: #ecf5f0;
+  --text-2: #c5d6cd;
+  --muted: #93a69d;
+  --primary: #22c55e;
+  --primary-hover: #4ade80;
+  --primary-soft: rgb(34 197 94 / 0.14);
+  --on-primary: #03130b;
+  --gold: #d9b46a;
+  --gold-soft: rgb(217 180 106 / 0.14);
+  --success: #4ade80;
+  --success-soft: rgb(74 222 128 / 0.12);
+  --warning: #fbbf24;
+  --warning-soft: rgb(251 191 36 / 0.12);
+  --danger: #f87171;
+  --danger-soft: rgb(248 113 113 / 0.12);
+  --track: #1b3229;
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 32px rgb(0 0 0 / 0.5);
+  --scene-bg: #0e1a2b;
+
+  --ag-world-sky: #0e1a2b;
+  --ag-world-horizon: #1b2b40;
+  --ag-world-light: #9fb7e0;
+  --ag-world-mine: #3fcb6b;
+  --ag-world-alert: #e6b450;
+  color-scheme: dark;
+}
+
+:root {
+  --radius: 12px;
+  --radius-sm: 8px;
+  --gap: 12px;
+  --appbar-height: 64px;
+  --panel-width: 400px;
+  --side-width: 236px;
+  --log-height: 100px;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-sans), system-ui, sans-serif;
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+button {
+  font-family: inherit;
+}
+
+a {
+  color: inherit;
+}
+
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}

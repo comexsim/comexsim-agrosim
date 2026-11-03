@@ -1,0 +1,21 @@
+.iconButton {
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border);
+  background: var(--surface-2);
+  color: var(--text-2);
+  cursor: pointer;
+}
+
+.iconButton:hover {
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+.iconButton svg {
+  width: 18px;
+  height: 18px;
+}

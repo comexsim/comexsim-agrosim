@@ -1,0 +1,7 @@
+# pnpm 12 exige aprobar explícitamente los scripts de instalación.
+allowBuilds:
+  esbuild: true
+  sharp: true
+  unrs-resolver: true
+  "@parcel/watcher": false
+  "@swc/core": false

@@ -1,0 +1,418 @@
+import type { Mission } from "@/engine/types";
+
+/**
+ * Misión AGRO #001 — Soya: del suelo al mercado (100 ha, Santa Cruz, campaña de verano).
+ *
+ * Banco consolidado de 18 decisiones (docs/agrosim/01-plan-demo.md en comexsim-docs): la versión
+ * AGR-001 del documento de la carrera, con los cálculos de semilla y sembradora de «Los Tajibos» y
+ * los dilemas de umbral, humedad y venta del tercer ejemplo.
+ *
+ * TODOS LOS VALORES SON SUPUESTOS ACADÉMICOS ILUSTRATIVOS, aproximados y verosímiles, no
+ * recomendaciones técnicas ni cotizaciones. Referencia usada para calibrar: el promedio de la
+ * campaña de verano 2025-26 en Santa Cruz fue de 2,36 t/ha (Anapo); 3,0 t/ha es el potencial con un
+ * manejo muy bueno. Se validan con docentes de la carrera después de la demo.
+ */
+export const AGRO_001: Mission = {
+  id: "agro-001",
+  area: 100,
+  budget: "65000",
+  durationDays: 120,
+  potentialYield: 3,
+  regionalYield: 2.36,
+  basePrice: "350",
+  baseShrink: 0.02,
+  overhead: "11500",
+  truckCapacity: 30,
+  tripCost: "220",
+  urgentTripPremium: "120",
+  forwardPremium: "15",
+  forwardCost: "1500",
+  advanceDiscount: "10",
+  priceShifts: [10, -10, 20, -20],
+  eventEffects: {
+    pestDamage: -12,
+    pestYield: 0.9,
+    pestFocalCost: "1200",
+    rainErosion: -4,
+    rainRust: -6,
+  },
+  dimensions: {
+    soil: 15,
+    sowing: 20,
+    crop: 20,
+    harvest: 15,
+    postharvest: 10,
+    market: 15,
+    sustainability: 5,
+  },
+  decisions: [
+    // ── Etapa 1 · Diagnóstico y preparación del suelo ──────────────────────────────────────────
+    {
+      id: "q01",
+      stage: "soil",
+      day: 1,
+      station: "field",
+      cue: "sampling",
+      points: 5,
+      kind: "choice",
+      options: [
+        { key: "a", quality: "poor", effects: { condition: -6, practice: false } },
+        { key: "b", quality: "best", effects: { cost: "400", concept: "soilTest" } },
+        { key: "c", quality: "poor", effects: { condition: -4, practice: false } },
+      ],
+    },
+    {
+      id: "q02",
+      stage: "soil",
+      day: 3,
+      station: "farm",
+      cue: "fertilize",
+      points: 5,
+      kind: "calc",
+      params: { dose: 80, area: 100, bag: 50, bagPrice: 28 },
+      options: [
+        {
+          key: "a",
+          quality: "poor",
+          params: { n: 80 },
+          effects: { cost: "2240", concept: "fertilizer", yieldFactor: 0.93, condition: -4 },
+        },
+        {
+          key: "b",
+          quality: "best",
+          params: { n: 160 },
+          effects: { cost: "4480", concept: "fertilizer" },
+        },
+        {
+          key: "c",
+          quality: "poor",
+          params: { n: 200 },
+          effects: { cost: "5600", concept: "fertilizer", practice: false },
+        },
+      ],
+    },
+    {
+      id: "q03",
+      stage: "soil",
+      day: 6,
+      station: "field",
+      cue: "notill",
+      points: 5,
+      kind: "choice",
+      params: { tillage: 65, direct: 35, rough: 10 },
+      options: [
+        {
+          key: "a",
+          quality: "fair",
+          cue: "till",
+          effects: {
+            cost: "6500",
+            concept: "landPrep",
+            condition: -3,
+            practice: false,
+            flag: "tilled",
+          },
+        },
+        { key: "b", quality: "best", effects: { cost: "3500", concept: "landPrep" } },
+        {
+          key: "c",
+          quality: "poor",
+          cue: "rough-prep",
+          effects: { cost: "1000", concept: "landPrep", condition: -10, yieldFactor: 0.95 },
+        },
+      ],
+    },
+    // ── Etapa 2 · Siembra ──────────────────────────────────────────────────────────────────────
+    {
+      id: "q04",
+      stage: "sowing",
+      day: 8,
+      station: "yard",
+      cue: "seed-delivery",
+      points: 5,
+      kind: "choice",
+      options: [
+        {
+          key: "a",
+          quality: "poor",
+          params: { price: 0.75 },
+          effects: { seedPrice: "0.75", yieldFactor: 0.9, condition: -6 },
+        },
+        { key: "b", quality: "best", params: { price: 1.2 }, effects: { seedPrice: "1.20" } },
+        {
+          key: "c",
+          quality: "poor",
+          params: { price: 0.65 },
+          effects: { seedPrice: "0.65", yieldFactor: 0.88, condition: -8 },
+        },
+      ],
+    },
+    {
+      id: "q05",
+      stage: "sowing",
+      day: 9,
+      station: "yard",
+      cue: "seed-load",
+      points: 5,
+      kind: "calc",
+      params: {
+        population: 280000,
+        germination: 90,
+        establishment: 85,
+        tsw: 160,
+        area: 100,
+        seedRate: 60,
+      },
+      options: [
+        { key: "a", quality: "poor", params: { kg: 4000 }, effects: { seedKg: 4000 } },
+        { key: "b", quality: "best", params: { kg: 6000 }, effects: { seedKg: 6000 } },
+        {
+          key: "c",
+          quality: "poor",
+          params: { kg: 10000 },
+          effects: { seedKg: 10000, condition: -4 },
+        },
+      ],
+    },
+    {
+      id: "q06",
+      stage: "sowing",
+      day: 10,
+      station: "yard",
+      cue: "inoculate",
+      points: 5,
+      kind: "choice",
+      options: [
+        { key: "a", quality: "poor", effects: { yieldFactor: 0.92 } },
+        { key: "b", quality: "best", effects: { cost: "600", concept: "inoculant" } },
+        {
+          key: "c",
+          quality: "poor",
+          effects: { cost: "3000", concept: "inoculant", practice: false },
+        },
+      ],
+    },
+    {
+      id: "q07",
+      stage: "sowing",
+      day: 12,
+      station: "field",
+      cue: "sow",
+      points: 5,
+      kind: "calc",
+      params: { spacing: 45, population: 280000, sowingCost: 45 },
+      options: [
+        {
+          key: "a",
+          quality: "poor",
+          params: { plants: 5 },
+          effects: { cost: "4500", concept: "sowing", yieldFactor: 0.85 },
+        },
+        {
+          key: "b",
+          quality: "best",
+          params: { plants: 12.6 },
+          effects: { cost: "4500", concept: "sowing" },
+        },
+        {
+          key: "c",
+          quality: "poor",
+          params: { plants: 25 },
+          effects: { cost: "4500", concept: "sowing", condition: -6, yieldFactor: 0.95 },
+        },
+      ],
+    },
+    // ── Etapa 3 · Manejo y protección del cultivo ──────────────────────────────────────────────
+    {
+      id: "q08",
+      stage: "crop",
+      day: 28,
+      station: "field",
+      cue: "spray-weeds",
+      points: 5,
+      kind: "choice",
+      options: [
+        {
+          key: "a",
+          quality: "poor",
+          cue: "weeds-grow",
+          effects: { condition: -15, yieldFactor: 0.88 },
+        },
+        { key: "b", quality: "best", effects: { cost: "3200", concept: "weeds" } },
+        {
+          key: "c",
+          quality: "poor",
+          effects: { cost: "2500", concept: "weeds", condition: -6, practice: false },
+        },
+      ],
+    },
+    {
+      id: "q09",
+      stage: "crop",
+      day: 42,
+      station: "field",
+      cue: "scout",
+      points: 5,
+      kind: "choice",
+      options: [
+        {
+          key: "a",
+          quality: "poor",
+          cue: "spray-all",
+          effects: { cost: "2800", concept: "nutrition", practice: false },
+        },
+        { key: "b", quality: "best", effects: { cost: "350", concept: "nutrition" } },
+        { key: "c", quality: "fair", effects: { condition: -3 } },
+      ],
+    },
+    {
+      id: "q10",
+      stage: "crop",
+      day: 55,
+      station: "field",
+      cue: "scout",
+      points: 5,
+      kind: "choice",
+      params: { found: 8, threshold: 10 },
+      options: [
+        {
+          key: "a",
+          quality: "poor",
+          cue: "spray-all",
+          effects: {
+            cost: "2800",
+            concept: "pests",
+            condition: -2,
+            practice: false,
+            flag: "pestBlanket",
+          },
+        },
+        { key: "b", quality: "best", cue: "spray-spot", effects: {} },
+        { key: "c", quality: "poor", effects: { flag: "pestUnchecked" } },
+      ],
+    },
+    {
+      id: "q11",
+      stage: "crop",
+      day: 72,
+      station: "field",
+      cue: "drone",
+      points: 5,
+      kind: "choice",
+      options: [
+        {
+          key: "a",
+          quality: "fair",
+          cue: "spray-all",
+          effects: { cost: "6000", concept: "disease", practice: false },
+        },
+        { key: "b", quality: "best", effects: { cost: "3000", concept: "disease" } },
+        {
+          key: "c",
+          quality: "poor",
+          effects: { condition: -15, yieldFactor: 0.82, flag: "rustUnchecked" },
+        },
+      ],
+    },
+    // ── Etapa 4 · Cosecha ──────────────────────────────────────────────────────────────────────
+    {
+      id: "q12",
+      stage: "harvest",
+      day: 110,
+      station: "field",
+      cue: "harvest-ready",
+      points: 5,
+      kind: "choice",
+      params: { moisture: 18, target: "13–14", rainIn: 3 },
+      options: [
+        { key: "a", quality: "fair", effects: { dryingPerTonne: "9" } },
+        { key: "b", quality: "best", effects: {} },
+        { key: "c", quality: "poor", effects: { harvestLoss: 0.08, condition: -4 } },
+      ],
+    },
+    {
+      id: "q13",
+      stage: "harvest",
+      day: 112,
+      station: "field",
+      cue: "yield-check",
+      points: 5,
+      kind: "production",
+    },
+    {
+      id: "q14",
+      stage: "harvest",
+      day: 113,
+      station: "field",
+      cue: "harvest",
+      points: 5,
+      kind: "choice",
+      params: { perHa: 75 },
+      options: [
+        {
+          key: "a",
+          quality: "poor",
+          effects: { perSownHa: "75", concept: "harvest", harvestLoss: 0.06, chargesDrying: true },
+        },
+        {
+          key: "b",
+          quality: "best",
+          effects: { perSownHa: "75", concept: "harvest", harvestLoss: 0.01, chargesDrying: true },
+        },
+        {
+          key: "c",
+          quality: "poor",
+          effects: { perSownHa: "75", concept: "harvest", harvestLoss: 0.1, chargesDrying: true },
+        },
+      ],
+    },
+    // ── Etapa 5 · Postcosecha y logística ──────────────────────────────────────────────────────
+    {
+      id: "q15",
+      stage: "postharvest",
+      day: 115,
+      station: "farm",
+      cue: "trucks",
+      points: 5,
+      kind: "trips",
+    },
+    {
+      id: "q16",
+      stage: "postharvest",
+      day: 117,
+      station: "acopio",
+      cue: "dryer",
+      points: 5,
+      kind: "choice",
+      options: [
+        { key: "a", quality: "poor", effects: { storageLoss: 0.06, practice: false } },
+        { key: "b", quality: "best", effects: { cost: "2000", concept: "conditioning" } },
+        { key: "c", quality: "poor", effects: { storageLoss: 0.04, practice: false } },
+      ],
+    },
+    // ── Etapa 6 · Comercialización y resultados ────────────────────────────────────────────────
+    {
+      id: "q17",
+      stage: "market",
+      day: 119,
+      station: "plant",
+      cue: "sale",
+      points: 8,
+      kind: "sale",
+    },
+    {
+      id: "q18",
+      stage: "market",
+      day: 120,
+      station: "result",
+      cue: "dashboard",
+      points: 7,
+      kind: "result",
+    },
+  ],
+  events: [
+    { id: "pests", after: "q10", day: 58 },
+    { id: "rain", after: "q11", day: 95 },
+    { id: "price", after: "q16", day: 118 },
+  ],
+};
