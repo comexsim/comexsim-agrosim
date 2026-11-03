@@ -1,0 +1,470 @@
+{
+  "metadata": {
+    "title": "SIMA · AgroSim — Agribusiness Lab",
+    "description": "Academic agribusiness management simulator: from soil preparation to marketing. Demo for UPSA."
+  },
+  "brand": {
+    "suite": "SIMA · Academic Simulator",
+    "name": "AgroSim",
+    "demo": "Academic demo"
+  },
+  "appBar": {
+    "language": "Language",
+    "themeToDark": "Switch to dark mode",
+    "themeToLight": "Switch to light mode",
+    "exit": "Back to missions",
+    "budget": "Budget",
+    "day": "Season",
+    "dayValue": "Day {day} / {total}",
+    "sown": "Sown",
+    "sownValue": "{ha} ha",
+    "yield": "Est. yield",
+    "yieldValue": "{value} t/ha",
+    "condition": "Crop condition",
+    "production": "Est. production",
+    "productionValue": "{value} t"
+  },
+  "hub": {
+    "eyebrow": "Virtual Lab · Agribusiness",
+    "title": "From soil to market, deciding like a farm manager",
+    "subtitle": "Agribusiness management simulations for the Agribusiness program. Each mission runs a full season on a 3D farm that reacts to your decisions.",
+    "available": "Available",
+    "soon": "Coming soon",
+    "play": "Start mission",
+    "duration": "Duration",
+    "level": "Level",
+    "goal": "Goal",
+    "disclaimer": "Illustrative values for academic purposes. They are not technical recommendations or market quotes.",
+    "missions": {
+      "m1": {
+        "code": "AGRO #001",
+        "title": "Soybean: from soil to market",
+        "text": "Run a 100 ha summer season in Santa Cruz: 18 decisions, from the soil test to the sale.",
+        "duration": "≈ 25 min",
+        "level": "Beginner",
+        "goal": "Produce and sell profitably"
+      },
+      "m2": {
+        "code": "AGRO #002",
+        "title": "Corn and fertilization management",
+        "text": "Plan the nutrition of a corn field with a soil test and a tight budget.",
+        "duration": "≈ 30 min",
+        "level": "Intermediate",
+        "goal": "Fertilize by diagnosis"
+      },
+      "m3": {
+        "code": "AGRO #003",
+        "title": "Sunflower and crop rotation",
+        "text": "Design the farm's rotation and measure its effect on the soil and the margin.",
+        "duration": "≈ 30 min",
+        "level": "Intermediate",
+        "goal": "Rotate to sustain the soil"
+      },
+      "m4": {
+        "code": "AGRO #004",
+        "title": "Farm costs and marketing",
+        "text": "Build the season budget and choose how and when to sell the harvest.",
+        "duration": "≈ 35 min",
+        "level": "Advanced",
+        "goal": "Protect the margin"
+      }
+    }
+  },
+  "briefing": {
+    "eyebrow": "Mission AGRO #001 · Summer season · Santa Cruz",
+    "title": "Your first soybean season",
+    "body": "You manage the Los Tajibos farm, 100 hectares in Santa Cruz. Your goal is a profitable harvest: use inputs well, avoid losses from poor agronomic decisions and sell with a good margin.",
+    "area": "Area",
+    "areaValue": "100 ha",
+    "budget": "Available capital",
+    "duration": "Estimated duration",
+    "durationValue": "120 days",
+    "price": "Reference price",
+    "priceValue": "USD 350/t",
+    "potential": "Yield potential",
+    "potentialValue": "3.0 t/ha",
+    "regional": "Santa Cruz average, summer 2025-26",
+    "regionalValue": "2.36 t/ha",
+    "howTitle": "How it works",
+    "how1": "You make 18 decisions across six stages, from soil preparation to the sale.",
+    "how2": "Every decision shows up on the farm and moves the budget, the yield and the crop condition.",
+    "how3": "At the end you get your season report with a score from 0 to 100.",
+    "disclaimer": "All costs, yields and conditions are illustrative academic assumptions, not technical recommendations or market quotes.",
+    "start": "Start the season"
+  },
+  "stages": {
+    "soil": "Soil",
+    "sowing": "Sowing",
+    "crop": "Crop care",
+    "harvest": "Harvest",
+    "postharvest": "Storage",
+    "market": "Sale",
+    "sustainability": "Sustainability"
+  },
+  "stageLong": {
+    "soil": "Soil diagnosis and preparation",
+    "sowing": "Sowing",
+    "crop": "Crop management and protection",
+    "harvest": "Harvest",
+    "postharvest": "Post-harvest and logistics",
+    "market": "Marketing and results",
+    "sustainability": "Sustainability and good practices"
+  },
+  "rail": {
+    "title": "Season stages",
+    "progress": "{done} of {total} decisions"
+  },
+  "decision": {
+    "counter": "Decision {n} of {total}",
+    "stage": "Stage {n} · {name}",
+    "dayChip": "Day {day}",
+    "confirm": "Confirm decision",
+    "playing": "Working on the farm…",
+    "continue": "Continue",
+    "finish": "See season report",
+    "cost": "Cost",
+    "free": "No cost",
+    "net": "Net income",
+    "quality": {
+      "best": "Recommended decision",
+      "fair": "Acceptable decision",
+      "poor": "Risky decision"
+    },
+    "consequence": "What happened on the farm",
+    "learn": "Learn from your decision",
+    "spent": "Spent on this decision",
+    "event": "Season event",
+    "select": "Choose an option"
+  },
+  "events": {
+    "pestsFocal": {
+      "title": "Pest above threshold in one sector",
+      "text": "The follow-up scouting finds 13 caterpillars per meter only in the northeast sector: only that sector is sprayed."
+    },
+    "pestsDamage": {
+      "title": "The pest spread",
+      "text": "With no follow-up, caterpillars defoliated the northeast sector and the crop condition dropped."
+    },
+    "pestsBlanket": {
+      "title": "The spraying was not needed",
+      "text": "The follow-up scouting shows the pest was under natural control in almost the whole field."
+    },
+    "rain": {
+      "title": "Heavy rain",
+      "text": "140 mm fall in three days. The field floods for a few days and grain moisture rises."
+    },
+    "rainErosion": {
+      "title": "Erosion on tilled soil",
+      "text": "With no cover, the rain washes soil away from the tilled field."
+    },
+    "rainRust": {
+      "title": "Rust spreads",
+      "text": "Humidity speeds up rust in the unprotected crop."
+    },
+    "priceUp": {
+      "title": "Price goes up",
+      "text": "World markets rise: the local board price goes up USD {shift}/t, to USD {price}/t."
+    },
+    "priceDown": {
+      "title": "Price goes down",
+      "text": "World markets fall: the local board price drops USD {shift}/t, to USD {price}/t."
+    }
+  },
+  "log": {
+    "title": "Season log",
+    "start": "Season starts: 100 ha and USD 65,000 of capital.",
+    "overhead": "Overhead: administration, labor and insurance.",
+    "dayLabel": "Day {day}"
+  },
+  "costs": {
+    "overhead": "Overhead",
+    "soilTest": "Soil test",
+    "fertilizer": "Fertilization",
+    "landPrep": "Land preparation",
+    "seed": "Seed",
+    "inoculant": "Inoculation",
+    "sowing": "Sowing",
+    "weeds": "Weed control",
+    "nutrition": "Nutrition",
+    "pests": "Pest control",
+    "disease": "Disease management",
+    "harvest": "Harvest",
+    "drying": "Drying",
+    "transport": "Transport",
+    "conditioning": "Grain conditioning",
+    "saleCosts": "Storage and financing",
+    "other": "Other"
+  },
+  "decisions": {
+    "q01": {
+      "title": "Soil diagnosis",
+      "scene": "Before spending on inputs you need to know what your soil has.",
+      "prompt": "How will you diagnose the soil's needs?",
+      "a": "Fertilize without testing, as always",
+      "b": "Representative sampling and a lab analysis",
+      "c": "Apply whatever the neighbor used",
+      "fa": "You saved USD 400, but you'll fertilize blindly: you may fall short or overspend.",
+      "fb": "The technician takes zigzag subsamples across the field and the lab returns pH, organic matter and available phosphorus.",
+      "fc": "The neighbor's field has a different history and soil: their recipe guarantees nothing on yours.",
+      "learn": "A representative test (0–20 cm zigzag subsamples, per zone) is the basis of all fertilization: it costs little compared with what it saves or earns."
+    },
+    "q02": {
+      "title": "Fertilizer purchase",
+      "scene": "The lab report is in and the supplier is waiting for your order.",
+      "prompt": "The lab recommends {dose} kg/ha of phosphate fertilizer. Your field is {area} ha and each bag holds {bag} kg at USD {bagPrice}. How many bags do you buy?",
+      "option": "{n} bags",
+      "fa": "80 bags cover only half the rate: the crop starts with less phosphorus than it needs.",
+      "fb": "Correct: 80 kg/ha × 100 ha = 8,000 kg; 8,000 ÷ 50 = 160 bags (USD 4,480).",
+      "fc": "You bought 40 extra bags: USD 1,120 tied up in the shed with no yield benefit.",
+      "learn": "Rate × area = total kilos; kilos ÷ bag weight = bags. 80 × 100 = 8,000 kg ÷ 50 = 160 bags × USD 28 = USD 4,480."
+    },
+    "q03": {
+      "title": "Land preparation",
+      "scene": "The field has residue from the previous crop and winter weeds.",
+      "prompt": "How will you prepare the land for sowing?",
+      "a": "Intensive tillage with several disc passes (USD {tillage}/ha)",
+      "b": "No-till over the residue, with a prior burndown (USD {direct}/ha)",
+      "c": "Sow without checking weeds or field conditions (USD {rough}/ha)",
+      "fa": "The disc leaves bare soil: higher cost, less moisture and erosion risk if it rains hard.",
+      "fb": "The sprayer controls the weeds and the residue stays as cover: it keeps moisture and protects the soil.",
+      "fc": "You saved money, but weeds will compete with the soybeans from emergence.",
+      "learn": "No-till is the dominant system in Santa Cruz: it keeps moisture, reduces erosion and lowers costs, as long as the burndown controls weeds well."
+    },
+    "q04": {
+      "title": "Seed choice",
+      "scene": "Three suppliers offer seed for your summer season.",
+      "prompt": "Which seed do you choose?",
+      "a": "Unknown origin, not certified (USD {price, number, ::.00}/kg)",
+      "b": "Certified, from a variety adapted to the area (USD {price, number, ::.00}/kg)",
+      "c": "No germination or health test (USD {price, number, ::.00}/kg)",
+      "fa": "Cheap, but with no guarantee of germination, purity or variety: you start with fewer plants.",
+      "fb": "Guaranteed germination, health and variety identity, in a variety adapted to the summer cycle.",
+      "fc": "If germination is low, the stand will be thin even with the full seeding rate.",
+      "learn": "Certified seed is one of the most profitable investments of the season: it secures the plant stand and tolerance to local diseases."
+    },
+    "q05": {
+      "title": "Seed calculation",
+      "scene": "You plan the sowing to reach the target plant population.",
+      "prompt": "Target: {population, number} plants/ha. Germination {germination}%, field establishment {establishment}% and thousand-seed weight {tsw} g. How many kg do you buy for {area} ha?",
+      "option": "{kg, number} kg",
+      "fa": "4,000 kg only cover about 67 ha: the rest of the field stays unsown.",
+      "fb": "Correct: 280,000 ÷ (0.90 × 0.85) ≈ 366,000 seeds/ha × 160 g ≈ 58.6 kg/ha → 60 kg/ha × 100 ha = 6,000 kg.",
+      "fc": "You have 4,000 kg left over and, if you overseed, plants compete with each other.",
+      "learn": "Seeds to sow = population ÷ (germination × establishment). Kilos per hectare = seeds × thousand-seed weight ÷ 1,000,000. Round up a little, without overdoing it."
+    },
+    "q06": {
+      "title": "Seed treatment",
+      "scene": "The seed is ready. You still have to choose the treatment before sowing.",
+      "prompt": "Which treatment do you apply to the seed?",
+      "a": "None: soybeans manage on their own",
+      "b": "Inoculate with nitrogen-fixing bacteria specific to soybeans",
+      "c": "Replace the inoculant with an arbitrary dose of urea",
+      "fa": "Without specific bacteria, the plant forms few nodules and fixes less nitrogen from the air.",
+      "fb": "The roots form nodules: the bacteria fix the nitrogen soybeans need, at almost no cost.",
+      "fc": "Urea costs far more, slows nodulation and does not replace biological fixation.",
+      "learn": "Soybeans get much of their nitrogen from biological fixation. Inoculating every season, with a compatible product kept out of the sun, is among the most profitable practices.",
+      "lens": "Soybean roots",
+      "nodules": "Nodules with nitrogen-fixing bacteria",
+      "fewNodules": "Almost no nodules"
+    },
+    "q07": {
+      "title": "Planter calibration",
+      "scene": "The planter is ready and the soil has good moisture.",
+      "prompt": "With rows {spacing} cm apart and {population, number} plants/ha, how many plants per row meter should you get?",
+      "option": "{plants, number} plants per meter",
+      "fa": "Too few plants: the canopy doesn't close the row and weeds take the space.",
+      "fb": "Correct: 10,000 m² ÷ 0.45 m = 22,222 m of row per ha; 280,000 ÷ 22,222 ≈ 12.6 plants per meter.",
+      "fc": "Twice the plants: they compete for light, grow tall and weak and may lodge.",
+      "learn": "Row meters per ha = 10,000 ÷ row spacing (m). Plants per meter = population ÷ row meters. Plus a 3–5 cm depth, depending on moisture."
+    },
+    "q08": {
+      "title": "Weeds in the field",
+      "scene": "At 28 days, weeds appear between the soybean rows.",
+      "prompt": "What do you do about the weeds?",
+      "a": "Ignore them for the whole season",
+      "b": "Identify species and density, and apply timely integrated control",
+      "c": "Spray any available herbicide without checking registration or rate",
+      "fa": "Weeds grow and compete for water, light and nutrients right in the critical period.",
+      "fb": "With the species identified, control arrives on time and protects yield.",
+      "fc": "You controlled some, but a poorly chosen product injures the crop (phytotoxicity) and builds resistance.",
+      "learn": "The critical competition period is the crop's first weeks. Identifying the weed, using registered products and rotating modes of action prevents losses and resistance."
+    },
+    "q09": {
+      "title": "Crop nutrition",
+      "scene": "Some plants look paler than others.",
+      "prompt": "How do you assess the crop's nutrition?",
+      "a": "Spray foliar fertilizer on the whole field, just in case",
+      "b": "Check nodulation, leaf analysis and soil history before deciding",
+      "c": "Check nothing until harvest",
+      "fa": "You spent USD 2,800 on an application the crop didn't need.",
+      "fb": "The diagnosis confirms good nodulation: no correction is needed.",
+      "fc": "Nothing serious happened this time, but you missed the chance to catch a problem early.",
+      "learn": "Diagnose before you apply: a paler tone can be a cloudy day, poor nodulation or a nutrient. Measuring costs far less than spraying blind."
+    },
+    "q10": {
+      "title": "Caterpillars on the leaves",
+      "scene": "Scouting finds defoliating caterpillars in one sector of the field.",
+      "prompt": "Sampling shows {found} caterpillars per row meter and the scenario's action threshold is {threshold}. What do you do?",
+      "a": "Spray insecticide on all 100 ha right away",
+      "b": "Scout again in a few days and treat only the sector if it passes the threshold",
+      "c": "Wait without scouting again",
+      "fa": "You sprayed the whole field with the pest below threshold: you overspent and killed beneficial insects.",
+      "fb": "The next scouting shows only the northeast sector passes the threshold: the spraying is targeted.",
+      "fc": "With no follow-up, the pest spreads and defoliates the affected sector.",
+      "learn": "Integrated pest management: scout, identify and compare with action thresholds. Not every insect sighting justifies spraying."
+    },
+    "q11": {
+      "title": "Rust risk",
+      "scene": "The weather turns humid and Asian soybean rust has been reported in the region.",
+      "prompt": "How do you respond to the rust risk?",
+      "a": "Repeated fungicide sprays with no diagnosis",
+      "b": "Step up scouting and apply preventively according to risk",
+      "c": "No follow-up",
+      "fa": "You protected the crop, but with twice the sprays and cost, and more resistance risk.",
+      "fb": "The drone maps risk by sector and the preventive spray arrives before the disease.",
+      "fc": "Rust spreads with the humidity and defoliates the crop before grain fill.",
+      "learn": "Asian soybean rust is the most damaging soybean disease in the region: scouting and a well-timed preventive spray are key."
+    },
+    "q12": {
+      "title": "Harvest timing",
+      "scene": "The field is mature. The meter reads grain at {moisture}% moisture and rain is forecast in {rainIn} days.",
+      "prompt": "When do you harvest?",
+      "a": "Harvest now, at {moisture}% moisture",
+      "b": "Wait two days for it to drop to {target}% and harvest before the rain",
+      "c": "Wait until the rains are over",
+      "fa": "You harvested before the rain, but you'll pay to dry the wet grain.",
+      "fb": "Two sunny days bring moisture to the commercial range: you harvest on time with no drying cost.",
+      "fc": "The rain delays harvest: shattering and pod-damaged grain increase.",
+      "learn": "Harvest at physiological maturity with moisture near the commercial range (13–14%): not so wet that it needs drying, not so late that grain is lost."
+    },
+    "q13": {
+      "title": "Production estimate",
+      "scene": "Before the combine goes in, you estimate how much you'll harvest.",
+      "prompt": "You sowed {ha, number} ha and the estimated yield is {yield, number} t/ha. How much soybean will you harvest (gross)?",
+      "option": "{t, number} tonnes",
+      "fbest": "Correct: sown hectares × yield = gross production.",
+      "fpoor": "Check the math: sown hectares × yield per hectare.",
+      "learn": "Production = harvested area × yield. It's the base volume for planning trucks, storage and sale."
+    },
+    "q14": {
+      "title": "Harvest losses",
+      "scene": "The contracted combine (USD {perHa}/ha) moves ahead and you see grain on the ground behind it.",
+      "prompt": "What do you do?",
+      "a": "Keep harvesting to finish fast",
+      "b": "Stop and adjust speed, header and threshing",
+      "c": "Speed up to harvest more in less time",
+      "fa": "You finished fast, but about 6% of the grain stayed on the ground.",
+      "fb": "With the machine adjusted, losses drop to about 1%.",
+      "fc": "More speed, more losses: about 10% of the grain was left in the field.",
+      "learn": "Every kilo that falls to the ground is lost income. Adjusting the combine and measuring losses with trays pays for itself."
+    },
+    "q15": {
+      "title": "Transport to storage",
+      "scene": "The harvest must go to the storage center in {capacity} t trucks, at USD {tripCost} per trip.",
+      "prompt": "You harvested {t, number} t. How many trips do you plan?",
+      "option": "{n} trips",
+      "fbest": "Correct: tonnes ÷ truck capacity, rounding up.",
+      "fpoor": "Poorly planned: trucks were short (pricier rush freight) or you paid for extra trips.",
+      "learn": "Trips = tonnes ÷ payload, always rounding up. A poorly planned trip costs more than an extra one."
+    },
+    "q16": {
+      "title": "Grain conditioning",
+      "scene": "At the storage center, part of the grain arrives wet and with impurities.",
+      "prompt": "What do you do with the soybeans at storage?",
+      "a": "Store it as is, with no control",
+      "b": "Clean it, measure moisture and dry when needed",
+      "c": "Mix wet grain with dry grain",
+      "fa": "Wet grain heats up and spoils: you lose about 6% of the volume.",
+      "fb": "Clean, dry grain: it keeps well and sells without discounts.",
+      "fc": "Mixing doesn't fix moisture: hot spots and discounts appear.",
+      "learn": "Post-harvest protects what you produced: moisture, impurities and temperature are controlled before storing or selling."
+    },
+    "q17": {
+      "title": "Selling the harvest",
+      "scene": "The crushing plant makes you three offers. The board price is USD {price, number}/t.",
+      "prompt": "You have {t, number} marketable tonnes. Which offer do you take?",
+      "a": "Spot sale at USD {price, number}/t",
+      "b": "Forward sale at USD {price, number}/t, with USD 1,500 of storage and financing",
+      "c": "Early payment at USD {price, number}/t",
+      "fbest": "You chose the offer with the highest net income after its costs.",
+      "ffair": "It's a valid, simpler option, but not the one with the highest net income.",
+      "fpoor": "It's the offer that leaves you the least: you get paid sooner but give up price.",
+      "learn": "Compare net income (price × tonnes, minus each option's costs) together with the risk and liquidity of each one."
+    },
+    "q18": {
+      "title": "Season result",
+      "scene": "The season is over. Time to do the math.",
+      "prompt": "Revenue: {revenue}. Total costs: {costs}. What is your operating profit?",
+      "option": "{amount}",
+      "fbest": "Correct: profit = revenue − total costs.",
+      "fpoor": "Check: profit = revenue − total costs.",
+      "learn": "Simplified operating profit = revenue − costs. A later version adds financing, land rent, depreciation and taxes."
+    }
+  },
+  "scene": {
+    "label": "Los Tajibos farm",
+    "loading": "Getting the farm ready…",
+    "fallback": "Your device has no 3D acceleration: showing the 2D view of the farm.",
+    "yard": "Farmstead",
+    "field": "Field · 100 ha",
+    "acopio": "Storage center",
+    "plant": "Crushing plant",
+    "noAnalysis": "No soil test",
+    "noSeed": "No seed for the rest of the field",
+    "threshold": "8 caterpillars/m · threshold 10",
+    "moisture": "Grain at 18%",
+    "rain": "140 mm in 3 days",
+    "phase": {
+      "bare": "Not sown",
+      "emergence": "Emergence",
+      "vegetative": "Vegetative growth",
+      "flowering": "Flowering",
+      "pods": "Pod set",
+      "filling": "Grain fill",
+      "maturity": "Maturity",
+      "dry": "Ready to harvest"
+    }
+  },
+  "result": {
+    "eyebrow": "Season report · AGRO #001",
+    "title": "Mission complete",
+    "text": "You completed the soybean production cycle, from soil preparation to the sale.",
+    "grade": {
+      "excellent": "Outstanding",
+      "good": "Pass",
+      "developing": "Developing"
+    },
+    "production": "Marketable production",
+    "productionValue": "{value} t",
+    "yield": "Yield",
+    "yieldValue": "{value} t/ha",
+    "costs": "Total cost",
+    "profit": "Profit",
+    "revenue": "Revenue",
+    "costPerHa": "Cost per hectare",
+    "costPerTonne": "Cost per tonne",
+    "margin": "Margin on sales",
+    "marginValue": "{value}%",
+    "score": "Academic score",
+    "scoreValue": "{score}/100",
+    "dimensions": "Score by dimension",
+    "economics": "Revenue, costs and profit",
+    "breakdown": "Season costs",
+    "mistakes": "Where you can improve",
+    "noMistakes": "You made every recommended decision.",
+    "mistakeLine": "Day {day} · {title}",
+    "compare": "Compared with your previous attempt",
+    "improved": "{count, plural, =0 {No improved decisions} one {# improved decision} other {# improved decisions}}",
+    "previous": "Previous",
+    "current": "Current",
+    "competencies": "Skills developed",
+    "c1": "Farm production planning",
+    "c2": "Seed, fertilizer and logistics calculations",
+    "c3": "Integrated weed, pest and disease management",
+    "c4": "Production cost control",
+    "c5": "Harvest and marketing management",
+    "retry": "Play again",
+    "hub": "Back to missions",
+    "disclaimer": "Illustrative result before taxes, interest, land rent and other costs not included."
+  }
+}

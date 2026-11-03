@@ -1,0 +1,470 @@
+{
+  "metadata": {
+    "title": "SIMA · AgroSim — Laboratorio de Agronegocios",
+    "description": "Simulador académico de gestión de agronegocios: de la preparación del suelo a la comercialización. Demo para la UPSA."
+  },
+  "brand": {
+    "suite": "SIMA · Simulador Académico",
+    "name": "AgroSim",
+    "demo": "Demo académica"
+  },
+  "appBar": {
+    "language": "Idioma",
+    "themeToDark": "Cambiar a modo oscuro",
+    "themeToLight": "Cambiar a modo claro",
+    "exit": "Salir a las misiones",
+    "budget": "Presupuesto",
+    "day": "Campaña",
+    "dayValue": "Día {day} / {total}",
+    "sown": "Sembrado",
+    "sownValue": "{ha} ha",
+    "yield": "Rend. estimado",
+    "yieldValue": "{value} t/ha",
+    "condition": "Condición del cultivo",
+    "production": "Producción est.",
+    "productionValue": "{value} t"
+  },
+  "hub": {
+    "eyebrow": "Laboratorio Virtual · Agronegocios",
+    "title": "Del suelo al mercado, decidiendo como un gerente agrícola",
+    "subtitle": "Simulaciones de gestión de agronegocios para la carrera de Agronegocios. Cada misión recorre una campaña completa sobre una finca 3D que reacciona a tus decisiones.",
+    "available": "Disponible",
+    "soon": "Próximamente",
+    "play": "Iniciar misión",
+    "duration": "Duración",
+    "level": "Nivel",
+    "goal": "Objetivo",
+    "disclaimer": "Valores ilustrativos con fines académicos. No son recomendaciones técnicas ni cotizaciones de mercado.",
+    "missions": {
+      "m1": {
+        "code": "AGRO #001",
+        "title": "Soya: del suelo al mercado",
+        "text": "Administra una campaña de verano de 100 ha en Santa Cruz: 18 decisiones, del análisis de suelo a la venta.",
+        "duration": "≈ 25 min",
+        "level": "Inicial",
+        "goal": "Producir y vender con rentabilidad"
+      },
+      "m2": {
+        "code": "AGRO #002",
+        "title": "Maíz y manejo de la fertilización",
+        "text": "Planifica la nutrición de un lote de maíz con análisis de suelo y presupuesto acotado.",
+        "duration": "≈ 30 min",
+        "level": "Intermedio",
+        "goal": "Fertilizar según diagnóstico"
+      },
+      "m3": {
+        "code": "AGRO #003",
+        "title": "Girasol y rotación de cultivos",
+        "text": "Diseña la rotación de la finca y mide su efecto en el suelo y en el margen.",
+        "duration": "≈ 30 min",
+        "level": "Intermedio",
+        "goal": "Rotar para sostener el suelo"
+      },
+      "m4": {
+        "code": "AGRO #004",
+        "title": "Costos y comercialización agrícola",
+        "text": "Arma el presupuesto de la campaña y elige cómo y cuándo vender la cosecha.",
+        "duration": "≈ 35 min",
+        "level": "Avanzado",
+        "goal": "Proteger el margen"
+      }
+    }
+  },
+  "briefing": {
+    "eyebrow": "Misión AGRO #001 · Campaña de verano · Santa Cruz",
+    "title": "Tu primera campaña de soya",
+    "body": "Administras la Unidad Productiva Los Tajibos, 100 hectáreas en Santa Cruz. Tu objetivo es una cosecha rentable: usar bien los insumos, evitar pérdidas por decisiones agronómicas incorrectas y vender con buen margen.",
+    "area": "Superficie",
+    "areaValue": "100 ha",
+    "budget": "Capital disponible",
+    "duration": "Duración estimada",
+    "durationValue": "120 días",
+    "price": "Precio referencial",
+    "priceValue": "USD 350/t",
+    "potential": "Rendimiento potencial",
+    "potentialValue": "3,0 t/ha",
+    "regional": "Promedio de Santa Cruz, verano 2025-26",
+    "regionalValue": "2,36 t/ha",
+    "howTitle": "Cómo funciona",
+    "how1": "Tomas 18 decisiones en seis etapas, de la preparación del suelo a la venta.",
+    "how2": "Cada decisión se ve en la finca y mueve el presupuesto, el rendimiento y la condición del cultivo.",
+    "how3": "Al final recibes tu informe de campaña con un puntaje de 0 a 100.",
+    "disclaimer": "Todos los costos, rendimientos y condiciones son supuestos académicos ilustrativos, no recomendaciones técnicas ni cotizaciones de mercado.",
+    "start": "Comenzar la campaña"
+  },
+  "stages": {
+    "soil": "Suelo",
+    "sowing": "Siembra",
+    "crop": "Manejo",
+    "harvest": "Cosecha",
+    "postharvest": "Acopio",
+    "market": "Venta",
+    "sustainability": "Sostenibilidad"
+  },
+  "stageLong": {
+    "soil": "Diagnóstico y preparación del suelo",
+    "sowing": "Siembra",
+    "crop": "Manejo y protección del cultivo",
+    "harvest": "Cosecha",
+    "postharvest": "Postcosecha y logística",
+    "market": "Comercialización y resultados",
+    "sustainability": "Sostenibilidad y buenas prácticas"
+  },
+  "rail": {
+    "title": "Etapas de la campaña",
+    "progress": "{done} de {total} decisiones"
+  },
+  "decision": {
+    "counter": "Decisión {n} de {total}",
+    "stage": "Etapa {n} · {name}",
+    "dayChip": "Día {day}",
+    "confirm": "Confirmar decisión",
+    "playing": "Ejecutando en la finca…",
+    "continue": "Continuar",
+    "finish": "Ver informe de campaña",
+    "cost": "Costo",
+    "free": "Sin costo",
+    "net": "Ingreso neto",
+    "quality": {
+      "best": "Decisión recomendada",
+      "fair": "Decisión aceptable",
+      "poor": "Decisión riesgosa"
+    },
+    "consequence": "Qué pasó en la finca",
+    "learn": "Aprende de tu decisión",
+    "spent": "Gasto de esta decisión",
+    "event": "Evento de campaña",
+    "select": "Elige una opción"
+  },
+  "events": {
+    "pestsFocal": {
+      "title": "Plaga sobre el umbral en un sector",
+      "text": "El nuevo monitoreo encuentra 13 orugas por metro solo en el sector noreste: se aplica únicamente ahí."
+    },
+    "pestsDamage": {
+      "title": "La plaga avanzó",
+      "text": "Sin seguimiento, las orugas defoliaron el sector noreste y bajó la condición del cultivo."
+    },
+    "pestsBlanket": {
+      "title": "La aplicación no era necesaria",
+      "text": "El nuevo monitoreo muestra que la plaga estaba bajo control natural en casi todo el lote."
+    },
+    "rain": {
+      "title": "Lluvia excesiva",
+      "text": "Caen 140 mm en tres días. El lote se anega unos días y la humedad del grano sube."
+    },
+    "rainErosion": {
+      "title": "Erosión en el suelo labrado",
+      "text": "Sin cobertura, la lluvia arrastra suelo del lote labrado."
+    },
+    "rainRust": {
+      "title": "La roya se dispersa",
+      "text": "La humedad acelera la roya en el cultivo sin control."
+    },
+    "priceUp": {
+      "title": "Sube el precio",
+      "text": "El mercado internacional sube: la pizarra local aumenta USD {shift}/t, a USD {price}/t."
+    },
+    "priceDown": {
+      "title": "Baja el precio",
+      "text": "El mercado internacional cae: la pizarra local baja USD {shift}/t, a USD {price}/t."
+    }
+  },
+  "log": {
+    "title": "Bitácora de la campaña",
+    "start": "Inicio de la campaña: 100 ha y USD 65.000 de capital.",
+    "overhead": "Costos generales: administración, mano de obra y seguros.",
+    "dayLabel": "Día {day}"
+  },
+  "costs": {
+    "overhead": "Costos generales",
+    "soilTest": "Análisis de suelo",
+    "fertilizer": "Fertilización",
+    "landPrep": "Preparación del terreno",
+    "seed": "Semilla",
+    "inoculant": "Inoculación",
+    "sowing": "Siembra",
+    "weeds": "Control de malezas",
+    "nutrition": "Nutrición",
+    "pests": "Control de plagas",
+    "disease": "Manejo de enfermedades",
+    "harvest": "Cosecha",
+    "drying": "Secado",
+    "transport": "Transporte",
+    "conditioning": "Acondicionamiento",
+    "saleCosts": "Almacenamiento y financiamiento",
+    "other": "Otros"
+  },
+  "decisions": {
+    "q01": {
+      "title": "Diagnóstico del suelo",
+      "scene": "Antes de invertir en insumos necesitas saber qué tiene tu suelo.",
+      "prompt": "¿Cómo diagnosticarás las necesidades del suelo?",
+      "a": "Fertilizar sin análisis, como siempre",
+      "b": "Muestreo representativo y análisis de laboratorio",
+      "c": "Aplicar lo mismo que usó el vecino",
+      "fa": "Ahorraste USD 400, pero vas a fertilizar a ciegas: puedes quedarte corto o gastar de más.",
+      "fb": "El técnico toma submuestras en zigzag por todo el lote y el laboratorio entrega pH, materia orgánica y fósforo disponible.",
+      "fc": "El lote del vecino tiene otra historia y otro suelo: su receta no garantiza nada en el tuyo.",
+      "learn": "Un análisis representativo (submuestras de 0 a 20 cm en zigzag, por ambiente) es la base de toda la fertilización: cuesta poco frente a lo que permite ahorrar o ganar."
+    },
+    "q02": {
+      "title": "Compra de fertilizante",
+      "scene": "Llegó el informe del laboratorio y el proveedor espera tu pedido.",
+      "prompt": "El laboratorio recomienda {dose} kg/ha de fertilizante fosfatado. Tu lote tiene {area} ha y cada bolsa trae {bag} kg a USD {bagPrice}. ¿Cuántas bolsas compras?",
+      "option": "{n} bolsas",
+      "fa": "Con 80 bolsas cubres solo la mitad de la dosis: el cultivo arranca con menos fósforo del que necesita.",
+      "fb": "Correcto: 80 kg/ha × 100 ha = 8.000 kg; 8.000 ÷ 50 = 160 bolsas (USD 4.480).",
+      "fc": "Compraste 40 bolsas de más: USD 1.120 inmovilizados en el galpón, sin beneficio productivo.",
+      "learn": "Dosis × superficie = kilos totales; kilos ÷ peso de la bolsa = bolsas. 80 × 100 = 8.000 kg ÷ 50 = 160 bolsas × USD 28 = USD 4.480."
+    },
+    "q03": {
+      "title": "Preparación del terreno",
+      "scene": "El lote tiene rastrojo del cultivo anterior y malezas de invierno.",
+      "prompt": "¿Cómo prepararás el terreno para sembrar?",
+      "a": "Labranza intensiva con varias pasadas de rastra (USD {tillage}/ha)",
+      "b": "Siembra directa sobre el rastrojo, con barbecho químico previo (USD {direct}/ha)",
+      "c": "Sembrar sin evaluar malezas ni condiciones del lote (USD {rough}/ha)",
+      "fa": "La rastra deja el suelo desnudo: más costo, menos humedad y riesgo de erosión si llueve fuerte.",
+      "fb": "La pulverizadora controla las malezas y el rastrojo queda como cobertura: conserva humedad y protege el suelo.",
+      "fc": "Ahorraste, pero las malezas competirán con la soya desde la emergencia.",
+      "learn": "La siembra directa es el sistema dominante en Santa Cruz: conserva la humedad, reduce la erosión y baja costos, siempre que el barbecho controle bien las malezas."
+    },
+    "q04": {
+      "title": "Elección de la semilla",
+      "scene": "Tres proveedores ofrecen semilla para tu campaña de verano.",
+      "prompt": "¿Qué semilla eliges?",
+      "a": "Origen desconocido, sin certificar (USD {price, number, ::.00}/kg)",
+      "b": "Certificada, de una variedad adaptada a la zona (USD {price, number, ::.00}/kg)",
+      "c": "Sin análisis de germinación ni sanidad (USD {price, number, ::.00}/kg)",
+      "fa": "Barata, pero sin garantía de germinación, pureza ni identidad varietal: arrancas con menos plantas.",
+      "fb": "Germinación, sanidad e identidad varietal garantizadas, en una variedad adaptada al ciclo de verano.",
+      "fc": "Si la germinación es baja, el lote quedará ralo aunque siembres la dosis completa.",
+      "learn": "La semilla certificada es de las inversiones más rentables de la campaña: asegura la población de plantas y la tolerancia a las enfermedades de la zona."
+    },
+    "q05": {
+      "title": "Cálculo de la semilla",
+      "scene": "Planificas la siembra para lograr la población objetivo de plantas.",
+      "prompt": "Objetivo: {population, number} plantas/ha. Germinación {germination} %, establecimiento en campo {establishment} % y peso de mil semillas {tsw} g. ¿Cuántos kg compras para las {area} ha?",
+      "option": "{kg, number} kg",
+      "fa": "Con 4.000 kg solo alcanza para unas 67 ha: el resto del lote queda sin sembrar.",
+      "fb": "Correcto: 280.000 ÷ (0,90 × 0,85) ≈ 366.000 semillas/ha × 160 g ≈ 58,6 kg/ha → 60 kg/ha × 100 ha = 6.000 kg.",
+      "fc": "Te sobran 4.000 kg y, si siembras de más, las plantas compiten entre sí.",
+      "learn": "Semillas a sembrar = población ÷ (germinación × establecimiento). Kilos por hectárea = semillas × peso de mil semillas ÷ 1.000.000. Se redondea un poco hacia arriba, sin exagerar."
+    },
+    "q06": {
+      "title": "Tratamiento de la semilla",
+      "scene": "La semilla está lista. Falta decidir el tratamiento antes de sembrar.",
+      "prompt": "¿Qué tratamiento aplicas a la semilla?",
+      "a": "Ninguno: la soya se arregla sola",
+      "b": "Inocular con bacterias fijadoras de nitrógeno específicas para soya",
+      "c": "Reemplazar el inoculante por urea en dosis arbitraria",
+      "fa": "Sin bacterias específicas, la planta forma pocos nódulos y fija menos nitrógeno del aire.",
+      "fb": "Las raíces forman nódulos: las bacterias fijan el nitrógeno que la soya necesita, casi sin costo.",
+      "fc": "La urea cuesta mucho más, frena la nodulación y no reemplaza la fijación biológica.",
+      "learn": "La soya obtiene buena parte de su nitrógeno por fijación biológica. Inocular cada campaña, con un producto compatible y protegido del sol, es de lo más rentable que existe.",
+      "lens": "Raíces de soya",
+      "nodules": "Nódulos con bacterias fijadoras",
+      "fewNodules": "Casi sin nódulos"
+    },
+    "q07": {
+      "title": "Calibración de la sembradora",
+      "scene": "La sembradora está lista y el suelo tiene buena humedad.",
+      "prompt": "Con hileras a {spacing} cm y {population, number} plantas/ha, ¿cuántas plantas por metro lineal debes lograr?",
+      "option": "{plants, number} plantas por metro",
+      "fa": "Muy pocas plantas: el cultivo no cierra el surco y las malezas aprovechan el espacio.",
+      "fb": "Correcto: 10.000 m² ÷ 0,45 m = 22.222 m de surco por ha; 280.000 ÷ 22.222 ≈ 12,6 plantas por metro.",
+      "fc": "El doble de plantas: compiten por luz, crecen altas y débiles y pueden acamarse.",
+      "learn": "Metros de surco por ha = 10.000 ÷ distancia entre hileras (m). Plantas por metro = población ÷ metros de surco. Y una profundidad de 3 a 5 cm, según la humedad."
+    },
+    "q08": {
+      "title": "Malezas en el lote",
+      "scene": "A los 28 días aparecen malezas entre las hileras de soya.",
+      "prompt": "¿Qué haces con las malezas?",
+      "a": "Ignorarlas durante toda la campaña",
+      "b": "Identificar especies y densidad, y hacer un control integrado a tiempo",
+      "c": "Aplicar cualquier herbicida disponible, sin verificar registro ni dosis",
+      "fa": "Las malezas crecen y compiten por agua, luz y nutrientes justo en el período crítico.",
+      "fb": "Con las especies identificadas, el control llega a tiempo y protege el rendimiento.",
+      "fc": "Controlaste algo, pero un producto mal elegido daña el cultivo (fitotoxicidad) y genera resistencia.",
+      "learn": "El período crítico de competencia son las primeras semanas del cultivo. Identificar la maleza, usar productos registrados y rotar modos de acción evita pérdidas y resistencia."
+    },
+    "q09": {
+      "title": "Nutrición del cultivo",
+      "scene": "Algunas plantas se ven más claras que otras.",
+      "prompt": "¿Cómo evalúas la nutrición del cultivo?",
+      "a": "Aplicar fertilizante foliar en todo el lote, por las dudas",
+      "b": "Revisar nodulación, análisis foliar e historial del suelo antes de decidir",
+      "c": "No revisar nada hasta la cosecha",
+      "fa": "Gastaste USD 2.800 en una aplicación que el cultivo no necesitaba.",
+      "fb": "El diagnóstico confirma buena nodulación: no hace falta ninguna corrección.",
+      "fc": "Esta vez no pasó nada grave, pero perdiste la oportunidad de detectar un problema a tiempo.",
+      "learn": "Antes de aplicar se diagnostica: un tono más claro puede ser un día nublado, falta de nodulación o un nutriente. Medir cuesta mucho menos que aplicar sin saber."
+    },
+    "q10": {
+      "title": "Orugas en las hojas",
+      "scene": "El monitoreo encuentra orugas defoliadoras en un sector del lote.",
+      "prompt": "El muestreo da {found} orugas por metro lineal y el umbral de acción del escenario es {threshold}. ¿Qué haces?",
+      "a": "Aplicar insecticida en las 100 ha de inmediato",
+      "b": "Volver a monitorear en pocos días y controlar solo el sector si supera el umbral",
+      "c": "Esperar sin volver a inspeccionar",
+      "fa": "Aplicaste en todo el lote con la plaga bajo el umbral: gastaste de más y eliminaste insectos benéficos.",
+      "fb": "El siguiente monitoreo muestra que solo el sector noreste supera el umbral: la aplicación es focalizada.",
+      "fc": "Sin seguimiento, la plaga avanza y defolia el sector afectado.",
+      "learn": "Manejo integrado de plagas: monitorear, identificar y comparar con umbrales de acción. No toda presencia de insectos justifica una aplicación."
+    },
+    "q11": {
+      "title": "Riesgo de roya",
+      "scene": "El clima se vuelve húmedo y hay focos de roya asiática en la región.",
+      "prompt": "¿Cómo actúas ante el riesgo de roya?",
+      "a": "Aplicaciones repetidas de fungicida, sin diagnóstico",
+      "b": "Intensificar el monitoreo y aplicar de forma preventiva según el riesgo",
+      "c": "No hacer seguimiento",
+      "fa": "Protegiste el cultivo, pero con el doble de aplicaciones y de costo, y más riesgo de resistencia.",
+      "fb": "El dron marca el riesgo por sectores y la aplicación preventiva llega antes que la enfermedad.",
+      "fc": "La roya avanza con la humedad y defolia el cultivo antes de llenar el grano.",
+      "learn": "La roya asiática es la enfermedad más dañina de la soya en la región: el monitoreo y la aplicación preventiva en el momento justo son la clave."
+    },
+    "q12": {
+      "title": "Momento de cosecha",
+      "scene": "El lote está maduro. El medidor marca grano con {moisture} % de humedad y se anuncian lluvias en {rainIn} días.",
+      "prompt": "¿Cuándo cosechas?",
+      "a": "Cosechar ya, con {moisture} % de humedad",
+      "b": "Esperar dos días a que baje al {target} % y cosechar antes de la lluvia",
+      "c": "Esperar a que pasen las lluvias",
+      "fa": "Cosechaste antes de la lluvia, pero pagarás el secado del grano húmedo.",
+      "fb": "Dos días de sol bajan la humedad al rango comercial: cosechas a tiempo y sin costo de secado.",
+      "fc": "La lluvia retrasa la cosecha: aumentan el desgrane y el grano dañado en la vaina.",
+      "learn": "Se cosecha con madurez fisiológica y humedad cercana al rango comercial (13 a 14 %): ni tan húmedo que obligue a secar, ni tan tarde que se pierda grano."
+    },
+    "q13": {
+      "title": "Estimación de la producción",
+      "scene": "Antes de entrar con la cosechadora, estimas cuánto vas a cosechar.",
+      "prompt": "Sembraste {ha, number} ha y el rendimiento estimado es de {yield, number} t/ha. ¿Cuánta soya cosecharás (en bruto)?",
+      "option": "{t, number} toneladas",
+      "fbest": "Correcto: hectáreas sembradas × rendimiento = producción bruta.",
+      "fpoor": "Revisa el cálculo: hectáreas sembradas × rendimiento por hectárea.",
+      "learn": "Producción = superficie cosechada × rendimiento. Es el volumen base para planificar camiones, acopio y venta."
+    },
+    "q14": {
+      "title": "Pérdidas en la cosecha",
+      "scene": "La cosechadora contratada (USD {perHa}/ha) avanza y ves granos en el suelo detrás de ella.",
+      "prompt": "¿Qué haces?",
+      "a": "Seguir cosechando para terminar rápido",
+      "b": "Detenerse y regular la velocidad, la plataforma y la trilla",
+      "c": "Aumentar la velocidad para cosechar más en menos tiempo",
+      "fa": "Terminaste rápido, pero cerca del 6 % del grano quedó en el suelo.",
+      "fb": "Con la máquina regulada, las pérdidas bajan a cerca del 1 %.",
+      "fc": "A más velocidad, más pérdidas: cerca del 10 % del grano quedó en el lote.",
+      "learn": "Cada kilo que cae al suelo es ingreso perdido. Regular la cosechadora y medir las pérdidas con bandejas se paga solo."
+    },
+    "q15": {
+      "title": "Transporte al acopio",
+      "scene": "Hay que llevar la cosecha al acopio en camiones de {capacity} t, a USD {tripCost} por viaje.",
+      "prompt": "Cosechaste {t, number} t. ¿Cuántos viajes planificas?",
+      "option": "{n} viajes",
+      "fbest": "Correcto: toneladas ÷ capacidad del camión, redondeando hacia arriba.",
+      "fpoor": "Mal planificado: faltaron camiones (fletes urgentes más caros) o pagaste viajes de más.",
+      "learn": "Viajes = toneladas ÷ capacidad útil, siempre redondeando hacia arriba. Un viaje mal planificado cuesta más que uno de más."
+    },
+    "q16": {
+      "title": "Acondicionamiento del grano",
+      "scene": "En el acopio, parte del grano llega con humedad e impurezas.",
+      "prompt": "¿Qué haces con la soya en el acopio?",
+      "a": "Almacenarla así, sin control",
+      "b": "Limpieza, medición de humedad y secado cuando corresponda",
+      "c": "Mezclar el grano húmedo con el seco",
+      "fa": "El grano húmedo se calienta y se deteriora: pierdes cerca del 6 % del volumen.",
+      "fb": "Grano limpio y seco: se conserva bien y se vende sin descuentos.",
+      "fc": "La mezcla no corrige la humedad: aparecen focos de deterioro y descuentos.",
+      "learn": "La postcosecha protege lo producido: humedad, impurezas y temperatura se controlan antes de almacenar o vender."
+    },
+    "q17": {
+      "title": "Venta de la cosecha",
+      "scene": "La planta aceitera te hace tres ofertas. La pizarra está en USD {price, number}/t.",
+      "prompt": "Tienes {t, number} t comercializables. ¿Qué oferta eliges?",
+      "a": "Venta al contado a USD {price, number}/t",
+      "b": "Venta a plazo a USD {price, number}/t, con USD 1.500 de almacenamiento y financiamiento",
+      "c": "Pago anticipado a USD {price, number}/t",
+      "fbest": "Elegiste la oferta con mayor ingreso neto después de sus costos.",
+      "ffair": "Es una opción válida y más simple, pero no la de mayor ingreso neto.",
+      "fpoor": "Es la oferta que menos te deja: cobras antes, pero resignas precio.",
+      "learn": "Se compara el ingreso neto (precio × toneladas, menos los costos de cada alternativa) junto con el riesgo y la liquidez de cada una."
+    },
+    "q18": {
+      "title": "Resultado de la campaña",
+      "scene": "La campaña termina. Es hora de hacer las cuentas.",
+      "prompt": "Ingresos: {revenue}. Costos totales: {costs}. ¿Cuál es tu utilidad operativa?",
+      "option": "{amount}",
+      "fbest": "Correcto: utilidad = ingresos − costos totales.",
+      "fpoor": "Revisa: utilidad = ingresos − costos totales.",
+      "learn": "Utilidad operativa simplificada = ingresos − costos. En una versión posterior se suman financiamiento, arrendamiento, depreciación e impuestos."
+    }
+  },
+  "scene": {
+    "label": "Finca de la Unidad Productiva Los Tajibos",
+    "loading": "Preparando la finca…",
+    "fallback": "Tu equipo no tiene aceleración 3D: se muestra la vista 2D de la finca.",
+    "yard": "Casco de la finca",
+    "field": "Lote · 100 ha",
+    "acopio": "Centro de acopio",
+    "plant": "Planta aceitera",
+    "noAnalysis": "Sin análisis de suelo",
+    "noSeed": "Sin semilla para el resto del lote",
+    "threshold": "8 orugas/m · umbral 10",
+    "moisture": "Grano al 18 %",
+    "rain": "140 mm en 3 días",
+    "phase": {
+      "bare": "Sin sembrar",
+      "emergence": "Emergencia",
+      "vegetative": "Desarrollo vegetativo",
+      "flowering": "Floración",
+      "pods": "Formación de vainas",
+      "filling": "Llenado de grano",
+      "maturity": "Madurez",
+      "dry": "Listo para cosechar"
+    }
+  },
+  "result": {
+    "eyebrow": "Informe de campaña · AGRO #001",
+    "title": "Misión completada",
+    "text": "Completaste el ciclo productivo de la soya, desde la preparación del suelo hasta la venta.",
+    "grade": {
+      "excellent": "Sobresaliente",
+      "good": "Aprobado",
+      "developing": "En desarrollo"
+    },
+    "production": "Producción comercializable",
+    "productionValue": "{value} t",
+    "yield": "Rendimiento",
+    "yieldValue": "{value} t/ha",
+    "costs": "Costo total",
+    "profit": "Utilidad",
+    "revenue": "Ingresos",
+    "costPerHa": "Costo por hectárea",
+    "costPerTonne": "Costo por tonelada",
+    "margin": "Margen sobre ventas",
+    "marginValue": "{value} %",
+    "score": "Evaluación académica",
+    "scoreValue": "{score}/100",
+    "dimensions": "Puntaje por dimensión",
+    "economics": "Ingresos, costos y utilidad",
+    "breakdown": "Costos de la campaña",
+    "mistakes": "Dónde puedes mejorar",
+    "noMistakes": "Tomaste todas las decisiones recomendadas.",
+    "mistakeLine": "Día {day} · {title}",
+    "compare": "Comparación con el intento anterior",
+    "improved": "{count, plural, =0 {Ninguna decisión mejorada} one {# decisión mejorada} other {# decisiones mejoradas}}",
+    "previous": "Anterior",
+    "current": "Actual",
+    "competencies": "Competencias desarrolladas",
+    "c1": "Planificación de la producción agrícola",
+    "c2": "Cálculo de semillas, fertilizantes y logística",
+    "c3": "Manejo integrado de malezas, plagas y enfermedades",
+    "c4": "Control de costos de producción",
+    "c5": "Gestión de cosecha y comercialización",
+    "retry": "Volver a jugar",
+    "hub": "Volver a las misiones",
+    "disclaimer": "Resultado ilustrativo antes de impuestos, intereses, arrendamiento y otros costos no contemplados."
+  }
+}
