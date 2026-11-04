@@ -11,9 +11,3 @@ export function parseTheme(value: string | undefined): Theme | null {
 export function oppositeTheme(theme: Theme): Theme {
   return theme === "dark" ? "light" : "dark";
 }
-
-/**
- * Corre antes del primer pintado: si el usuario aún no eligió un modo, sigue al
- * sistema operativo. Así el servidor puede pintar un modo por defecto sin parpadeo.
- */
-export const themeInitScript = `(function(){try{if(!document.cookie.match(/(?:^|; )${THEME_COOKIE}=/)&&window.matchMedia("(prefers-color-scheme: dark)").matches)document.documentElement.setAttribute("data-theme","dark")}catch(e){}})()`;

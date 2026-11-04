@@ -5,7 +5,7 @@ import { NextIntlClientProvider } from "next-intl";
 import { getLocale, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 
-import { parseTheme, THEME_COOKIE, themeInitScript } from "@/features/theme/theme";
+import { parseTheme, THEME_COOKIE } from "@/features/theme/theme";
 
 import "./globals.css";
 
@@ -26,7 +26,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function RootLayout({ children }: { children: ReactNode }) {
   const locale = await getLocale();
-  // Con modo elegido, el servidor ya lo pinta; sin él, el script sigue al sistema.
+  // Claro por defecto: se presenta en proyector y de noche la finca se ve oscura.
   const theme = parseTheme((await cookies()).get(THEME_COOKIE)?.value) ?? "light";
 
   return (
@@ -36,9 +36,6 @@ export default async function RootLayout({ children }: { children: ReactNode }) 
       className={`${sans.variable} ${serif.variable}`}
       suppressHydrationWarning
     >
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
-      </head>
       <body>
         <NextIntlClientProvider>{children}</NextIntlClientProvider>
       </body>
