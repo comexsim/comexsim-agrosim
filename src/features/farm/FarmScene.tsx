@@ -1,21 +1,24 @@
 "use client";
 
 import { useFrame } from "@react-three/fiber";
-import { useRef, type ReactNode } from "react";
+import { useLayoutEffect, useMemo, useRef, type ReactNode } from "react";
+import { BoxGeometry, Object3D, type InstancedMesh } from "three";
 import type { Group } from "three";
 
 import type { StationId } from "@/engine/types";
-import { useWorld } from "@/world/context";
+import type { Vec3 } from "@/world/camera";
+import { useSurface, useWorld } from "@/world/context";
 import { WorldTag } from "@/world/labels";
 import { Ground, Road, TreeRow } from "@/world/nature";
-import { Box } from "@/world/primitives";
+import { loopProgress } from "@/world/path";
+import { Box, Cylinder } from "@/world/primitives";
 import { WorldStage, type WorldInsets } from "@/world/stage";
 
 import { Actors, type SceneLabels } from "./Actors";
 import { Dryer, House, OilPlant, Scale, Shed, Silo } from "./buildings";
 import { SceneProvider, useScene, type SceneSource } from "./clock";
 import { ACOPIO, FIELD, PLANT, ROAD, ROAD_Z, SHOTS, YARD } from "./layout";
-import { Sprayer, TractorWith } from "./machines";
+import { BagTruck, GrainTruck, Mover, Sprayer, TractorWith } from "./machines";
 import { SoyField } from "./SoyField";
 import { stepProgress } from "./visual";
 
@@ -57,7 +60,10 @@ export default function FarmScene({
       fallback={fallback}
     >
       <SceneProvider value={source}>
-        <Landscape labels={labels} />
+        <Landscape labels={labels} tags={station !== "result"} />
+        <Fence />
+        <PowerLine />
+        <RoadTraffic />
         <SoyField />
         <Yard />
         <Acopio />
@@ -68,7 +74,7 @@ export default function FarmScene({
   );
 }
 
-function Landscape({ labels }: { labels: FarmLabels }) {
+function Landscape({ labels, tags }: { labels: FarmLabels; tags: boolean }) {
   const { palette } = useWorld();
   const halfW = FIELD.width / 2;
   const halfD = FIELD.depth / 2;
@@ -82,10 +88,14 @@ function Landscape({ labels }: { labels: FarmLabels }) {
       <TreeRow from={[halfW + 24, 0, -halfD - 10]} to={[halfW + 24, 0, halfD - 30]} count={10} />
       <TreeRow from={[ACOPIO[0] - 40, 0, -60]} to={[PLANT[0] + 40, 0, -75]} count={18} />
       <TreeRow from={[-260, 0, 120]} to={[420, 0, 125]} count={34} />
-      <WorldTag text={labels.field} tone="mine" position={[0, 22, -halfD]} />
-      <WorldTag text={labels.yard} position={[YARD[0], 22, YARD[2] - 12]} />
-      <WorldTag text={labels.acopio} position={[ACOPIO[0], 34, ACOPIO[2] - 16]} />
-      <WorldTag text={labels.plant} position={[PLANT[0], 36, PLANT[2] - 8]} />
+      {tags ? (
+        <>
+          <WorldTag text={labels.field} tone="mine" position={[0, 22, -halfD]} />
+          <WorldTag text={labels.yard} position={[YARD[0], 22, YARD[2] - 12]} />
+          <WorldTag text={labels.acopio} position={[ACOPIO[0], 34, ACOPIO[2] - 16]} />
+          <WorldTag text={labels.plant} position={[PLANT[0], 36, PLANT[2] - 8]} />
+        </>
+      ) : null}
     </>
   );
 }
@@ -171,5 +181,132 @@ function Acopio() {
         </mesh>
       </group>
     </group>
+  );
+}
+
+const FENCE_X = FIELD.width / 2 + 13;
+const FENCE_Z = FIELD.depth / 2 + 13;
+/** El cerco deja abierta la salida de los camiones de la cosecha, en la esquina sureste. */
+const GATE_X = FIELD.width / 2 - 2;
+const POST_STEP = 9;
+const postGeometry = new BoxGeometry(0.5, 2.2, 0.5);
+
+/** Cerco bajo alrededor del lote: postes y un alambre, para que la finca tenga límites. */
+function Fence() {
+  const { palette } = useWorld();
+  const material = useSurface()(palette.trunk);
+  const mesh = useRef<InstancedMesh>(null);
+  const posts = useMemo(() => {
+    const spots: [number, number][] = [];
+    for (let x = -FENCE_X; x <= FENCE_X; x += POST_STEP) {
+      spots.push([x, -FENCE_Z]);
+      if (x < GATE_X) spots.push([x, FENCE_Z]);
+    }
+    for (let z = -FENCE_Z + POST_STEP; z < FENCE_Z; z += POST_STEP) {
+      spots.push([-FENCE_X, z], [FENCE_X, z]);
+    }
+    return spots;
+  }, []);
+  useLayoutEffect(() => {
+    const instanced = mesh.current;
+    if (!instanced) return;
+    const place = new Object3D();
+    posts.forEach(([x, z], i) => {
+      place.position.set(x, 1.1, z);
+      place.updateMatrix();
+      instanced.setMatrixAt(i, place.matrix);
+    });
+    instanced.instanceMatrix.needsUpdate = true;
+  }, [posts]);
+  return (
+    <group>
+      <instancedMesh
+        ref={mesh}
+        args={[postGeometry, material, posts.length]}
+        frustumCulled={false}
+      />
+      <Box
+        size={[FENCE_X * 2, 0.12, 0.12]}
+        at={[0, 1.8, -FENCE_Z]}
+        color={palette.wall2}
+        shadow={false}
+      />
+      <Box
+        size={[FENCE_X + GATE_X, 0.12, 0.12]}
+        at={[(GATE_X - FENCE_X) / 2, 1.8, FENCE_Z]}
+        color={palette.wall2}
+        shadow={false}
+      />
+      <Box
+        size={[0.12, 0.12, FENCE_Z * 2]}
+        at={[-FENCE_X, 1.8, 0]}
+        color={palette.wall2}
+        shadow={false}
+      />
+      <Box
+        size={[0.12, 0.12, FENCE_Z * 2]}
+        at={[FENCE_X, 1.8, 0]}
+        color={palette.wall2}
+        shadow={false}
+      />
+    </group>
+  );
+}
+
+/** Postes de luz a lo largo del camino. */
+function PowerLine() {
+  const { palette } = useWorld();
+  const xs = useMemo(() => {
+    const spots: number[] = [];
+    for (let x = ROAD.from + 30; x < ROAD.to; x += 62) spots.push(x);
+    return spots;
+  }, []);
+  return (
+    <group>
+      {xs.map((x) => (
+        <group key={x} position={[x, 0, ROAD_Z + 9]}>
+          <Cylinder radius={0.3} height={13} color={palette.trunk} segments={6} />
+          <Box size={[0.3, 0.3, 4.4]} at={[0, 11.6, 0]} color={palette.trunk} shadow={false} />
+        </group>
+      ))}
+      <Box
+        size={[ROAD.to - ROAD.from, 0.08, 0.08]}
+        at={[(ROAD.from + ROAD.to) / 2, 11.9, ROAD_Z + 9]}
+        color={palette.dark}
+        shadow={false}
+      />
+    </group>
+  );
+}
+
+const TRAFFIC_LANE = ROAD_Z + 2;
+const TRAFFIC_SPEED = 11;
+
+/** Tráfico ajeno por el carril de afuera, para que el mundo no esté quieto entre decisiones. */
+function RoadTraffic() {
+  const { palette } = useWorld();
+  const scene = useScene();
+  const length = ROAD.to - ROAD.from;
+  const forward = useMemo<Vec3[]>(
+    () => [
+      [ROAD.from, 0, TRAFFIC_LANE],
+      [ROAD.to, 0, TRAFFIC_LANE],
+    ],
+    [],
+  );
+  const progress = (offset: number) => () =>
+    loopProgress(scene.now() / 1000, length, TRAFFIC_SPEED, offset);
+  return (
+    <>
+      <Mover path={forward} progress={progress(0.1)}>
+        <GrainTruck cab={palette.contractor} scale={1.5} />
+      </Mover>
+      <Mover path={forward} progress={progress(0.45)}>
+        <BagTruck cab={palette.shirt} bag={palette.wall2} scale={1.5} />
+      </Mover>
+      <Mover path={forward} progress={progress(0.8)}>
+        <GrainTruck cab={palette.truck} scale={1.5} />
+      </Mover>
+    </>
   );
 }

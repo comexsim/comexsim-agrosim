@@ -6,7 +6,8 @@
   "brand": {
     "suite": "SIMA · Academic Simulator",
     "name": "AgroSim",
-    "demo": "Academic demo"
+    "demo": "Academic demo",
+    "university": "Universidad Privada de Santa Cruz de la Sierra"
   },
   "appBar": {
     "language": "Language",
@@ -68,7 +69,8 @@
         "level": "Advanced",
         "goal": "Protect the margin"
       }
-    }
+    },
+    "present": "Presentation mode"
   },
   "briefing": {
     "eyebrow": "Mission AGRO #001 · Summer season · Santa Cruz",
@@ -134,7 +136,8 @@
     "learn": "Learn from your decision",
     "spent": "Spent on this decision",
     "event": "Season event",
-    "select": "Choose an option"
+    "select": "Choose an option",
+    "overBudget": "You exceeded the available capital by {amount}: the season needs financing that wasn't planned."
   },
   "events": {
     "pestsFocal": {
@@ -151,7 +154,7 @@
     },
     "rain": {
       "title": "Heavy rain",
-      "text": "140 mm fall in three days. The field floods for a few days and grain moisture rises."
+      "text": "140 mm fall in three days. The field floods for a few days and machines can't get in."
     },
     "rainErosion": {
       "title": "Erosion on tilled soil",
@@ -423,7 +426,17 @@
       "filling": "Grain fill",
       "maturity": "Maturity",
       "dry": "Ready to harvest"
-    }
+    },
+    "tagTechnician": "Technician",
+    "tagSpreader": "Spreader",
+    "tagHarrow": "Disc harrow",
+    "tagSprayer": "Sprayer",
+    "tagSeeder": "Planter",
+    "tagDrone": "Drone",
+    "tagCombine": "Contracted combine",
+    "tagTrucks": "Trucks to storage",
+    "tagSale": "Delivery to plant",
+    "tagInputs": "Inputs"
   },
   "result": {
     "eyebrow": "Season report · AGRO #001",
@@ -465,6 +478,45 @@
     "c5": "Harvest and marketing management",
     "retry": "Play again",
     "hub": "Back to missions",
-    "disclaimer": "Illustrative result before taxes, interest, land rent and other costs not included."
+    "disclaimer": "Illustrative result before taxes, interest, land rent and other costs not included.",
+    "overBudget": "The season exceeded the available capital by {amount}: a real company would have had to finance that gap."
+  },
+  "presentation": {
+    "badge": "Guided tour",
+    "paused": "Paused",
+    "pause": "Pause",
+    "resume": "Resume",
+    "exit": "Exit",
+    "progress": "Tour progress",
+    "captions": {
+      "briefing": "The student runs a 100 ha farm in Santa Cruz, with limited capital and a profitability goal. The same farm changes with every decision.",
+      "q01": "First, the diagnosis: the technician samples across the field. Every decision shows on the farm and comes out of the budget.",
+      "q02": "Agronomy and math go together: from the lab's rate to the bags to buy.",
+      "q03": "The tillage system changes the soil you see, the cost and the erosion risk.",
+      "q04": "Choosing seed isn't only about price: germination and health define how many plants there will be.",
+      "q05": "Real agribusiness math: buy too little seed and part of the field stays unsown, visibly.",
+      "q06": "The lens shows what you can't see from above: the nodules that fix nitrogen.",
+      "q07": "The planter crosses the field, the rows appear and the crop cycle starts running.",
+      "q08": "Here we show a mistake on purpose: ignoring the weeds. It doesn't block the season, but condition and yield drop.",
+      "q09": "Diagnose before applying. Measuring costs far less than spraying blind.",
+      "q10": "There are caterpillars, but below the threshold. The right call isn't to spray the whole field: it's to scout again.",
+      "q11": "The drone builds the rust risk map and a rain event arrives. The season isn't the same in every attempt.",
+      "q12": "18% moisture with rain in the forecast: a real trade-off between drying costs and grain losses.",
+      "q13": "Yield accumulates every earlier decision, including the weed mistake.",
+      "q14": "The combine harvests the field. If it isn't adjusted, lost grain shows on the ground and the volume to sell drops.",
+      "q15": "Logistics are calculated too: tonnes, truck capacity and trips to storage.",
+      "q16": "Post-harvest protects what was produced: cleaning, moisture and silos filling up.",
+      "q17": "A market event moved the price. The student compares each offer's net income, along with its risk.",
+      "q18": "The student closes the books of their own season: the question uses their numbers, not a memorized answer.",
+      "result": "The report connects agronomic decisions with the business result: costs, profit, score and where to improve."
+    }
+  },
+  "stageHint": {
+    "soil": "Sampling, fertilization and preparation",
+    "sowing": "Seed, rate and inoculation",
+    "crop": "Weeds, nutrition, pests and rust",
+    "harvest": "Maturity, production and losses",
+    "postharvest": "Transport, moisture and storage",
+    "market": "Sale and results"
   }
 }

@@ -34,11 +34,14 @@ El estudiante administra una campaña de soya de **100 ha en Santa Cruz** (Misi�
   - planta aceitera.
 - **Tres eventos:** plaga, lluvia excesiva y variación del precio. El precio cambia en cada intento, para que no se memorice la respuesta.
 - **Informe final:** costos por concepto, ingresos, utilidad, margen, puntaje en siete dimensiones, dónde se perdió y comparación con el intento anterior. Los intentos se guardan en el navegador.
-- **Español e inglés, modo claro y oscuro.** Si el equipo no tiene GPU, se muestra un respaldo 2D.
+- **Modo Presentación:** un recorrido guiado de unos 6 minutos, con narración en pantalla y botones para pausar y salir. Se abre desde la portada o en `/mision/agro-001?presentacion=1`. Toma las decisiones recomendadas y comete un error a propósito (ignorar las malezas), para mostrar su costo. No cuenta como intento.
+- **Español e inglés.** Abre en modo claro, con opción de oscuro. Si el equipo no tiene GPU, se muestra un respaldo 2D.
 
 ## Desplegar en Vercel
 
 No necesita variables de entorno ni tokens: todas las dependencias son públicas.
+
+Publicada en <https://comexsim-agrosim.vercel.app>. Vercel despliega `main` en producción y cada PR en una vista previa. Para crear otro proyecto:
 
 1. En Vercel: **Add New → Project → Import** `comexsim/comexsim-agrosim`. Si no aparece, dale acceso a la aplicación de Vercel en la organización de GitHub.
 2. Vercel detecta **Next.js** y **pnpm** por el `pnpm-lock.yaml` y el campo `packageManager`. No hay que cambiar nada:
@@ -68,10 +71,14 @@ corepack pnpm lint && corepack pnpm typecheck && corepack pnpm build
 | `src/world/` | El kit de escena copiado de `@comexsim/ui` (cámara isométrica, posprocesado, calidad adaptativa). Ver `docs/decisiones/ADR-001`. |
 | `messages/` | Los textos de la interfaz en español e inglés. |
 
+## Rendimiento medido
+
+Recorrido guiado completo a 1366×768 en un portátil con Intel HD Graphics 620 (2026-11-04): mediana de 54 FPS y bajadas breves hasta 26 FPS, con la calidad adaptativa activa. La demo no llega a 60 FPS sostenidos en esa GPU, aunque el recorrido se ve fluido.
+
 ## Cómo se calibró la misión
 
 - **Rendimiento:** 3,0 t/ha es el potencial con buen manejo. El promedio de la campaña de verano 2025-26 en Santa Cruz fue de 2,36 t/ha (Anapo), y el briefing lo muestra como referencia.
 - **Precio de referencia:** USD 350/t. El evento de mercado lo mueve ±10 o ±20.
-- **Costos:** el escenario recomendado suma USD 53.130 (unos USD 531/ha) y deja una utilidad cercana a USD 56.000.
+- **Costos:** el escenario recomendado suma USD 53.130 (unos USD 531/ha) y deja una utilidad cercana a USD 56.000, con el precio que sube en el evento de mercado.
 
-El detalle de cada decisión y la base de cada número están en `src/data/agro-001.ts`.
+El detalle de cada decisión está en `src/data/agro-001.ts`. Qué valores se contrastaron con fuentes públicas, cuáles vienen del documento de la carrera y cuáles son supuestos está en [`docs/fuentes-de-los-valores.md`](docs/fuentes-de-los-valores.md). El costo por hectárea queda por debajo de las referencias de 2026.

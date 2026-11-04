@@ -2,7 +2,7 @@
 
 import { useTranslations } from "next-intl";
 
-import { currentDecision, optionsFor, promptParams } from "@/engine/campaign";
+import { currentDecision, metrics, optionsFor, promptParams } from "@/engine/campaign";
 import type { CampaignState, Decision, LogEntry, ResolvedOption } from "@/engine/types";
 import { Button } from "@/ui/Button";
 import { cx } from "@/ui/cx";
@@ -155,6 +155,7 @@ function Feedback() {
     (entry) => entry.tone === "event" && last.events.length > 0 && entry.day >= decision.day,
   );
   const finished = campaign.step >= MISSION.decisions.length;
+  const left = metrics(MISSION, campaign).budgetLeft;
   const Icon = last.quality === "best" ? CheckIcon : AlertIcon;
 
   return (
@@ -183,6 +184,12 @@ function Feedback() {
           {event.cost ? <small>{money(event.cost)}</small> : null}
         </div>
       ))}
+
+      {left.startsWith("-") ? (
+        <p className={styles.overBudget} role="alert">
+          {t("decision.overBudget", { amount: money(left.slice(1)) })}
+        </p>
+      ) : null}
 
       <div className={styles.learn}>
         <h3>

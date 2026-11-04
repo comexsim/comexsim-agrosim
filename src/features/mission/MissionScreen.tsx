@@ -7,6 +7,8 @@ import { useEffect, useMemo, useState } from "react";
 import { useSceneLabels } from "@/features/farm/useSceneLabels";
 import { fieldVisual } from "@/features/farm/visual";
 import type { SceneSource } from "@/features/farm/clock";
+import { PresentationBar } from "@/features/presentation/PresentationBar";
+import { PresentationDirector } from "@/features/presentation/PresentationDirector";
 import { AppBar } from "@/features/shell/AppBar";
 
 import { Briefing } from "./Briefing";
@@ -50,7 +52,7 @@ function useInsets() {
 }
 
 /** Pantalla del simulador: la finca 3D al centro y el HUD alrededor. */
-export function MissionScreen() {
+export function MissionScreen({ presentation = false }: { presentation?: boolean }) {
   const phase = useMission((state) => state.phase);
   const campaign = useMission((state) => state.campaign);
   const cue = useMission((state) => state.cue);
@@ -59,13 +61,17 @@ export function MissionScreen() {
   const last = useMission((state) => state.last);
   const hydrate = useMission((state) => state.hydrate);
   const reveal = useMission((state) => state.reveal);
+  const startPresentation = useMission((state) => state.startPresentation);
+  const stopPresentation = useMission((state) => state.stopPresentation);
   const labels = useSceneLabels();
   const wide = useInsets();
   const day = useAnimatedDay(timeline);
 
   useEffect(() => {
+    if (presentation) startPresentation();
     hydrate();
-  }, [hydrate]);
+    return () => stopPresentation();
+  }, [presentation, hydrate, startPresentation, stopPresentation]);
 
   // La consecuencia aparece cuando termina la animación en la finca.
   useEffect(() => {
@@ -117,6 +123,8 @@ export function MissionScreen() {
           </>
         ) : null}
         {phase === "result" ? <Result /> : null}
+        <PresentationDirector />
+        <PresentationBar />
       </div>
     </div>
   );

@@ -197,3 +197,13 @@
     background: color-mix(in srgb, var(--bg) 70%, transparent);
   }
 }
+
+.actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.actions a {
+  text-decoration: none;
+}

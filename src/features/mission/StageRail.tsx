@@ -38,7 +38,7 @@ export function StageRail() {
               <span className={styles.stageIndex}>{finished ? <CheckIcon /> : index + 1}</span>
               <span className={styles.stageName}>
                 <b>{t(`stages.${stage}`)}</b>
-                <small>{t(`stageLong.${stage}`)}</small>
+                <small>{t(`stageHint.${stage}`)}</small>
                 <span className={styles.dots}>
                   {decisions.map((d) => (
                     <i

@@ -72,9 +72,17 @@ export function MissionHub() {
                   </div>
                 </dl>
                 {available ? (
-                  <Link href="/mision/agro-001" className={buttonClass("primary", true)}>
-                    {t("hub.play")}
-                  </Link>
+                  <div className={styles.actions}>
+                    <Link href="/mision/agro-001" className={buttonClass("primary", true)}>
+                      {t("hub.play")}
+                    </Link>
+                    <Link
+                      href="/mision/agro-001?presentacion=1"
+                      className={buttonClass("secondary", true)}
+                    >
+                      {t("hub.present")}
+                    </Link>
+                  </div>
                 ) : (
                   <span className={styles.locked}>
                     <LockIcon /> {t("hub.soon")}

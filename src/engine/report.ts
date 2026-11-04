@@ -46,6 +46,8 @@ export interface CampaignReport {
   sownHa: number;
   yieldTHa: number;
   commercialT: number;
+  /** Cuánto superaron los costos al capital disponible, o `null` si alcanzó. */
+  overBudget: string | null;
   breakdown: { concept: string; amount: string }[];
   dimensions: DimensionScore[];
   score: number;
@@ -104,6 +106,7 @@ export function buildReport(mission: Mission, state: CampaignState): CampaignRep
     sownHa: m.sownHa,
     yieldTHa: m.yieldTHa,
     commercialT: m.commercialT,
+    overBudget: costs.gt(mission.budget) ? usd(costs.minus(mission.budget)) : null,
     breakdown: costsByConcept(state),
     dimensions,
     score,
