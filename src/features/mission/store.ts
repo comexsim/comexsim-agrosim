@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 import { AGRO_001 } from "@/data/agro-001";
+import { PRESENTATION_SEED } from "@/data/presentation";
 import {
   applyDecision,
   createCampaign,
@@ -45,6 +46,9 @@ interface MissionStore {
   /** Viajes planificados en q15 (los camiones que se dibujan). */
   trips: number;
   attempts: AttemptSummary[];
+  /** Modo Presentación: el guion lleva la misión y no cuenta como intento. */
+  presenting: boolean;
+  paused: boolean;
   hydrate: () => void;
   begin: (now: number) => void;
   select: (key: OptionKey) => void;
@@ -52,6 +56,9 @@ interface MissionStore {
   reveal: () => void;
   next: (now: number) => void;
   restart: () => void;
+  startPresentation: () => void;
+  stopPresentation: () => void;
+  togglePause: () => void;
 }
 
 const mission = AGRO_001;
@@ -77,10 +84,13 @@ export const useMission = create<MissionStore>((set, get) => ({
   timeline: still(0),
   trips: 0,
   attempts: [],
+  presenting: false,
+  paused: false,
 
   hydrate: () => {
     const attempts = loadAttempts(mission.id);
-    set({ attempts, campaign: createCampaign(mission, attempts.length) });
+    if (get().presenting) set({ attempts });
+    else set({ attempts, campaign: createCampaign(mission, attempts.length) });
   },
 
   begin: (now) => {
@@ -127,9 +137,13 @@ export const useMission = create<MissionStore>((set, get) => ({
   },
 
   next: (now) => {
-    const { campaign, attempts, phase } = get();
+    const { campaign, attempts, phase, presenting } = get();
     if (phase !== "feedback") return;
     if (isFinished(mission, campaign)) {
+      if (presenting) {
+        set({ phase: "result", cue: null, selected: null });
+        return;
+      }
       const saved = [...attempts, summarize(mission, campaign)];
       saveAttempts(mission.id, saved);
       set({ phase: "result", attempts: saved, cue: null, selected: null });
@@ -156,6 +170,28 @@ export const useMission = create<MissionStore>((set, get) => ({
       trips: 0,
     });
   },
+
+  startPresentation: () => {
+    set({
+      campaign: createCampaign(mission, PRESENTATION_SEED),
+      phase: "briefing",
+      selected: null,
+      last: null,
+      cue: null,
+      timeline: still(0),
+      trips: 0,
+      presenting: true,
+      paused: false,
+    });
+  },
+
+  stopPresentation: () => {
+    if (!get().presenting) return;
+    set({ presenting: false, paused: false });
+    get().restart();
+  },
+
+  togglePause: () => set({ paused: !get().paused }),
 }));
 
 /** Día de campaña con decimales en el instante `now`, con aceleración suave. */

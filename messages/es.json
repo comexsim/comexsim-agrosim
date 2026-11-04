@@ -6,7 +6,8 @@
   "brand": {
     "suite": "SIMA · Simulador Académico",
     "name": "AgroSim",
-    "demo": "Demo académica"
+    "demo": "Demo académica",
+    "university": "Universidad Privada de Santa Cruz de la Sierra"
   },
   "appBar": {
     "language": "Idioma",
@@ -68,7 +69,8 @@
         "level": "Avanzado",
         "goal": "Proteger el margen"
       }
-    }
+    },
+    "present": "Modo presentación"
   },
   "briefing": {
     "eyebrow": "Misión AGRO #001 · Campaña de verano · Santa Cruz",
@@ -134,7 +136,8 @@
     "learn": "Aprende de tu decisión",
     "spent": "Gasto de esta decisión",
     "event": "Evento de campaña",
-    "select": "Elige una opción"
+    "select": "Elige una opción",
+    "overBudget": "Superaste el capital disponible por {amount}: la campaña necesita financiamiento que no estaba previsto."
   },
   "events": {
     "pestsFocal": {
@@ -151,7 +154,7 @@
     },
     "rain": {
       "title": "Lluvia excesiva",
-      "text": "Caen 140 mm en tres días. El lote se anega unos días y la humedad del grano sube."
+      "text": "Caen 140 mm en tres días. El lote se anega unos días y las máquinas no pueden entrar."
     },
     "rainErosion": {
       "title": "Erosión en el suelo labrado",
@@ -423,7 +426,17 @@
       "filling": "Llenado de grano",
       "maturity": "Madurez",
       "dry": "Listo para cosechar"
-    }
+    },
+    "tagTechnician": "Técnico",
+    "tagSpreader": "Fertilizadora",
+    "tagHarrow": "Rastra",
+    "tagSprayer": "Pulverizadora",
+    "tagSeeder": "Sembradora",
+    "tagDrone": "Dron",
+    "tagCombine": "Cosechadora contratada",
+    "tagTrucks": "Camiones al acopio",
+    "tagSale": "Entrega a la planta",
+    "tagInputs": "Insumos"
   },
   "result": {
     "eyebrow": "Informe de campaña · AGRO #001",
@@ -465,6 +478,45 @@
     "c5": "Gestión de cosecha y comercialización",
     "retry": "Volver a jugar",
     "hub": "Volver a las misiones",
-    "disclaimer": "Resultado ilustrativo antes de impuestos, intereses, arrendamiento y otros costos no contemplados."
+    "disclaimer": "Resultado ilustrativo antes de impuestos, intereses, arrendamiento y otros costos no contemplados.",
+    "overBudget": "La campaña superó el capital disponible por {amount}: una empresa real habría tenido que financiar esa diferencia."
+  },
+  "presentation": {
+    "badge": "Recorrido guiado",
+    "paused": "En pausa",
+    "pause": "Pausar",
+    "resume": "Continuar",
+    "exit": "Salir",
+    "progress": "Avance del recorrido",
+    "captions": {
+      "briefing": "El estudiante administra una finca de 100 ha en Santa Cruz, con capital limitado y una meta de rentabilidad. La misma finca se transforma con cada decisión.",
+      "q01": "Primero, el diagnóstico: el técnico toma muestras por todo el lote. Cada decisión se ve en la finca y se descuenta del presupuesto.",
+      "q02": "Agronomía y cálculo van juntos: de la dosis del laboratorio a las bolsas que hay que comprar.",
+      "q03": "El sistema de preparación cambia el suelo que se ve, el costo y el riesgo de erosión.",
+      "q04": "Elegir semilla no es solo precio: germinación y sanidad definen cuántas plantas habrá.",
+      "q05": "Cálculo real de agronegocios: si compra poca semilla, parte del lote queda sin sembrar y se ve en la finca.",
+      "q06": "La lupa muestra lo que no se ve desde arriba: los nódulos que fijan el nitrógeno.",
+      "q07": "La sembradora recorre el lote, quedan los surcos y empieza a correr el ciclo del cultivo.",
+      "q08": "Aquí mostramos un error a propósito: ignorar las malezas. No bloquea la campaña, pero baja la condición y el rendimiento.",
+      "q09": "Antes de aplicar se diagnostica. Medir cuesta mucho menos que aplicar sin saber.",
+      "q10": "Hay orugas, pero por debajo del umbral. La decisión correcta no es aplicar en todo el lote: es volver a monitorear.",
+      "q11": "El dron arma el mapa de riesgo de roya y llega un evento de lluvia. La campaña no es igual en cada intento.",
+      "q12": "Humedad del 18 % y lluvia pronosticada: un dilema real entre costo de secado y pérdidas de grano.",
+      "q13": "El rendimiento acumula todas las decisiones anteriores, incluido el error con las malezas.",
+      "q14": "La cosechadora recoge el lote. Si no se regula, el grano perdido se ve en el suelo y baja el volumen a vender.",
+      "q15": "La logística también se calcula: toneladas, capacidad del camión y viajes hasta el acopio.",
+      "q16": "La postcosecha protege lo producido: limpieza, humedad y silos que se llenan.",
+      "q17": "El precio cambió con un evento de mercado. El estudiante compara el ingreso neto de cada oferta, además de su riesgo.",
+      "q18": "El estudiante cierra las cuentas de su propia campaña: la pregunta usa sus números, no una respuesta memorizada.",
+      "result": "El informe conecta las decisiones agronómicas con el resultado de la empresa: costos, utilidad, puntaje y dónde mejorar."
+    }
+  },
+  "stageHint": {
+    "soil": "Muestreo, fertilización y preparación",
+    "sowing": "Semilla, dosis e inoculación",
+    "crop": "Malezas, nutrición, plagas y roya",
+    "harvest": "Madurez, producción y pérdidas",
+    "postharvest": "Transporte, humedad y almacenaje",
+    "market": "Venta y resultados"
   }
 }

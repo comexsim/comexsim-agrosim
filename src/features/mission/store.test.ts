@@ -45,6 +45,27 @@ describe("pantalla de la misión", () => {
     expect(stationFor("decide", campaign, null)).toBe("field");
   });
 
+  it("el Modo Presentación usa su semilla, no cuenta como intento y al salir vuelve a empezar", () => {
+    const store = useMission.getState;
+    store().startPresentation();
+    store().hydrate();
+    const before = store().attempts.length;
+    expect(store().presenting).toBe(true);
+    expect(store().campaign.seed).toBe(0);
+    store().begin(0);
+    for (let i = 0; i < 18; i += 1) {
+      store().select("b");
+      store().confirm(i);
+      store().reveal();
+      store().next(i);
+    }
+    expect(store().phase).toBe("result");
+    expect(store().attempts).toHaveLength(before);
+    store().stopPresentation();
+    expect(store().presenting).toBe(false);
+    expect(store().phase).toBe("briefing");
+  });
+
   it("ignora un historial de intentos dañado", () => {
     expect(parseAttempts("no es json")).toEqual([]);
     expect(parseAttempts('[{"score":80,"profit":"100","best":[]},{"x":1}]')).toHaveLength(1);
