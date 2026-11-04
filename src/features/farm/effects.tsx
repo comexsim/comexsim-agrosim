@@ -5,6 +5,7 @@ import { useMemo, useRef } from "react";
 import {
   BoxGeometry,
   Color,
+  IcosahedronGeometry,
   MeshBasicMaterial,
   MeshStandardMaterial,
   Object3D,
@@ -251,5 +252,45 @@ export function SprayMist({ active, width = 18 }: { active: () => boolean; width
     <mesh ref={mesh} material={material} position={[-2.4, 0.7, 0]}>
       <boxGeometry args={[1.6, 1.3, width]} />
     </mesh>
+  );
+}
+
+const PUFFS = 14;
+const puffGeometry = new IcosahedronGeometry(1, 0);
+
+/**
+ * Polvo que levanta la maquinaria detrás suyo. Va como hijo del vehículo: las nubes nacen en la
+ * parte de atrás (−X), se abren y suben mientras se desvanecen en bucle.
+ */
+export function Dust({ spread, color = "soil" }: { spread: number; color?: "soil" | "grain" }) {
+  const { palette } = useWorld();
+  const mesh = useRef<InstancedMesh>(null);
+  const material = useMemo(
+    () =>
+      new MeshBasicMaterial({
+        color: color === "grain" ? palette.straw : palette.soil,
+        transparent: true,
+        opacity: 0.32,
+        depthWrite: false,
+      }),
+    [color, palette.straw, palette.soil],
+  );
+  useFrame(({ clock }) => {
+    const instanced = mesh.current;
+    if (!instanced || !instanced.parent?.parent?.visible) return;
+    for (let i = 0; i < PUFFS; i += 1) {
+      const t = (clock.elapsedTime * 0.7 + i / PUFFS) % 1;
+      scratch.position.set(-9 - t * 16, 0.8 + t * 5, (hash(i, 21) - 0.5) * spread);
+      scratch.rotation.set(0, 0, 0);
+      scratch.scale.setScalar((0.9 + t * 3.2) * (1 - t * t));
+      scratch.updateMatrix();
+      instanced.setMatrixAt(i, scratch.matrix);
+    }
+    instanced.instanceMatrix.needsUpdate = true;
+  });
+  return (
+    <group>
+      <instancedMesh ref={mesh} args={[puffGeometry, material, PUFFS]} frustumCulled={false} />
+    </group>
   );
 }

@@ -97,11 +97,11 @@ export function SoyField() {
     const harvest = stepProgress(visual, cue, "q14", now);
     const pestSpray = stepProgress(visual, cue, "q10", now);
     const key = [
-      day.toFixed(2),
-      prep.toFixed(3),
-      sow.toFixed(3),
-      weedSpray.toFixed(3),
-      harvest.toFixed(3),
+      day.toFixed(1),
+      prep.toFixed(2),
+      sow.toFixed(2),
+      weedSpray.toFixed(2),
+      harvest.toFixed(2),
       pestSpray.toFixed(2),
       visual.stress.toFixed(2),
       visual.pest,
@@ -131,7 +131,7 @@ export function SoyField() {
           scratch.scale.set(w, 0.25 + h * 1.65, w * 0.9);
           tint.copy(colors.young).lerp(colors.crop, Math.min(h * 1.6, 1));
           if (h > 0.6) tint.lerp(colors.deep, (h - 0.6) * 1.2);
-          if (spot.noise > 0.75) tint.lerp(colors.flower, look.bloom * 0.3);
+          if (spot.noise > 0.75) tint.lerp(colors.flower, look.bloom * 0.14);
           if (look.ripeness <= 1) {
             if (spot.noise < visual.stress * 0.9) tint.lerp(colors.yellow, 0.45);
             tint.lerp(colors.yellow, look.ripeness);
@@ -225,14 +225,12 @@ export function SoyField() {
       <instancedMesh
         ref={plants}
         args={[plantGeometry, instanceMaterial, spots.length]}
-        castShadow
         receiveShadow
         frustumCulled={false}
       />
       <instancedMesh
         ref={weeds}
         args={[weedGeometry, instanceMaterial, weedSpots.length]}
-        castShadow
         frustumCulled={false}
       />
       <instancedMesh

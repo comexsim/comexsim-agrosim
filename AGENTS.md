@@ -29,4 +29,6 @@ Reglas para todo agente que trabaje en este repo. Complementa el `AGENTS.md` del
 | Qué es la demo y cómo se despliega | `README.md` |
 | Por qué el kit de escena está copiado | `docs/decisiones/ADR-001-kit-de-escena-copiado.md` |
 | Las 18 decisiones y sus números | `src/data/agro-001.ts` |
+| De dónde sale cada valor | `docs/fuentes-de-los-valores.md` |
+| El guion del Modo Presentación | `src/data/presentation.ts` |
 | El plan de la demo y las fuentes | `comexsim-docs/docs/agrosim/` |

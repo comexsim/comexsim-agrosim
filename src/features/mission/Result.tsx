@@ -20,10 +20,12 @@ export function Result() {
   const { money, num } = useFormat();
   const campaign = useMission((state) => state.campaign);
   const attempts = useMission((state) => state.attempts);
+  const presenting = useMission((state) => state.presenting);
   const restart = useMission((state) => state.restart);
   const report = buildReport(MISSION, campaign);
-  const current = attempts.at(-1);
-  const previous = attempts.at(-2);
+  // El recorrido guiado no cuenta como intento: no se compara con nada.
+  const current = presenting ? undefined : attempts.at(-1);
+  const previous = presenting ? undefined : attempts.at(-2);
   const improved = previous && current ? improvedDecisions(previous, current) : [];
 
   const revenue = Number(report.revenue);
@@ -50,6 +52,12 @@ export function Result() {
           <span>{t(`result.grade.${report.grade}`)}</span>
         </div>
       </header>
+
+      {report.overBudget ? (
+        <p className={styles.overBudget} role="alert">
+          {t("result.overBudget", { amount: money(report.overBudget) })}
+        </p>
+      ) : null}
 
       <dl className={styles.kpis}>
         <div>

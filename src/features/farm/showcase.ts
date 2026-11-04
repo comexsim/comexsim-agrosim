@@ -17,5 +17,5 @@ export function showcaseSource(day = 47): SceneSource {
     state = applyDecision(AGRO_001, state, best?.key ?? "b").state;
   }
   const visual = { ...fieldVisual(state, 0), weeds: 0 };
-  return { now: () => 0, day: () => day, visual, cue: null };
+  return { now: () => performance.now(), day: () => day, visual, cue: null };
 }

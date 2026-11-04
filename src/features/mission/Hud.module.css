@@ -494,7 +494,8 @@
   margin: 0;
   padding: 0 0 4px;
   list-style: none;
-  overflow-x: auto;
+  overflow: auto hidden;
+  scrollbar-width: none;
 }
 
 .logItem {
@@ -746,4 +747,14 @@
     bottom: auto;
     top: 16px;
   }
+}
+
+.overBudget {
+  margin: 0;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 600;
 }

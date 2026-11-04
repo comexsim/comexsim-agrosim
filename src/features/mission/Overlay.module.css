@@ -101,7 +101,7 @@
   z-index: 2;
   inset: 0;
   overflow-y: auto;
-  padding: 28px max(16px, calc((100% - 1180px) / 2));
+  padding: 28px max(16px, calc((100% - 1180px) / 2)) 150px;
   background: color-mix(in srgb, var(--bg) 78%, transparent);
   backdrop-filter: blur(6px);
   -webkit-backdrop-filter: blur(6px);
@@ -162,6 +162,15 @@
 
 .developing {
   color: var(--danger);
+}
+
+.overBudget {
+  margin: 16px 0 0;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  background: var(--danger-soft);
+  color: var(--danger);
+  font-weight: 600;
 }
 
 .kpis {

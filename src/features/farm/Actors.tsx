@@ -13,7 +13,7 @@ import { samplePath } from "@/world/path";
 
 import { BagStack, SampleFlag } from "./buildings";
 import { useScene } from "./clock";
-import { Clouds, GrainLosses, Rain, RiskMap, SprayMist } from "./effects";
+import { Clouds, Dust, GrainLosses, Rain, RiskMap, SprayMist } from "./effects";
 import {
   ACOPIO_TO_PLANT,
   FIELD,
@@ -28,6 +28,16 @@ import { BagTruck, Combine, Drone, GrainTruck, Mover, Sprayer, TractorWith } fro
 import { stepProgress } from "./visual";
 
 export interface SceneLabels {
+  tagTechnician: string;
+  tagSpreader: string;
+  tagHarrow: string;
+  tagSprayer: string;
+  tagSeeder: string;
+  tagDrone: string;
+  tagCombine: string;
+  tagTrucks: string;
+  tagSale: string;
+  tagInputs: string;
   noAnalysis: string;
   noSeed: string;
   threshold: string;
@@ -83,6 +93,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
         visible={() => playing("q01", "sampling")}
       >
         <Person shirt={palette.mine} scale={4.5} />
+        <WorldTag text={labels.tagTechnician} tone="mine" position={[0, 13, 0]} />
       </Mover>
       <SampleFlags />
       {visual.answered.includes("q01") &&
@@ -98,6 +109,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
         visible={() => playing("q02") && progress("q02") < 0.35}
       >
         <BagTruck cab={palette.truck} bag={palette.paint} scale={1.6} />
+        <WorldTag text={labels.tagInputs} position={[0, 10, 0]} />
       </Mover>
       <Mover
         path={FIELD_PASSES}
@@ -105,6 +117,8 @@ export function Actors({ labels }: { labels: SceneLabels }) {
         visible={() => playing("q02") && progress("q02") >= 0.35}
       >
         <TractorWith implement="spreader" color={palette.mine} scale={2.4} />
+        <Dust spread={8} />
+        <WorldTag text={labels.tagSpreader} tone="mine" position={[0, 16, 0]} />
       </Mover>
       {visual.bags > 0 ? (
         <BagStack
@@ -121,6 +135,8 @@ export function Actors({ labels }: { labels: SceneLabels }) {
         visible={() => playing("q03", "till")}
       >
         <TractorWith implement="harrow" color={palette.mine} scale={2.4} />
+        <Dust spread={20} />
+        <WorldTag text={labels.tagHarrow} tone="mine" position={[0, 16, 0]} />
       </Mover>
       <Mover
         path={FIELD_PASSES}
@@ -131,6 +147,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
           <Sprayer color={palette.mine} />
           <SprayMist active={() => playing("q03", "notill")} />
         </group>
+        <WorldTag text={labels.tagSprayer} tone="mine" position={[0, 16, 0]} />
       </Mover>
 
       {/* q04 · llegan las bolsas de semilla */}
@@ -140,6 +157,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
           bag={scene.cue?.quality === "best" ? palette.mine : palette.straw}
           scale={1.6}
         />
+        <WorldTag text={labels.tagInputs} position={[0, 10, 0]} />
       </Mover>
       {visual.answered.includes("q04") && !visual.answered.includes("q07") ? (
         <BagStack bags={120} color={palette.straw} position={[YARD[0] - 6, 0, YARD[2] + 24]} />
@@ -162,6 +180,8 @@ export function Actors({ labels }: { labels: SceneLabels }) {
         visible={() => playing("q07")}
       >
         <TractorWith implement="seeder" color={palette.mine} scale={2.4} />
+        <Dust spread={24} />
+        <WorldTag text={labels.tagSeeder} tone="mine" position={[0, 16, 0]} />
       </Mover>
       {sownShare < 1 && visual.answered.includes("q07") && !visual.answered.includes("q14") ? (
         <WorldTag text={labels.noSeed} tone="alert" position={[60, 10, 50]} />
@@ -185,6 +205,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
           <Sprayer color={palette.mine} />
           <SprayMist active={() => true} />
         </group>
+        <WorldTag text={labels.tagSprayer} tone="mine" position={[0, 16, 0]} />
       </Mover>
 
       {/* q09 y q10 · el técnico recorre el lote */}
@@ -202,6 +223,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
         }}
       >
         <Person shirt={palette.mine} scale={4.5} />
+        <WorldTag text={labels.tagTechnician} tone="mine" position={[0, 13, 0]} />
       </Mover>
       <PestMarker label={labels.threshold} />
       <Mover
@@ -213,11 +235,13 @@ export function Actors({ labels }: { labels: SceneLabels }) {
           <Sprayer color={palette.mine} />
           <SprayMist active={() => true} />
         </group>
+        <WorldTag text={labels.tagSprayer} tone="mine" position={[0, 16, 0]} />
       </Mover>
 
       {/* q11 · el dron sobrevuela y deja el mapa de riesgo */}
       <Mover path={FIELD_PASSES} progress={() => progress("q11")} visible={() => playing("q11")}>
         <Drone color={palette.mine} scale={3.6} position={[0, 18, 0]} />
+        <WorldTag text={labels.tagDrone} tone="mine" position={[0, 28, 0]} />
       </Mover>
       <RiskMap
         reveal={() => {
@@ -242,7 +266,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
       ) : null}
 
       {/* q14 · cosecha */}
-      <Harvester />
+      <Harvester label={labels.tagCombine} />
       <GrainLosses
         harvested={() => Math.min(progress("q14"), sownShare)}
         density={visual.harvestLoss === "high" ? 0.6 : 0.08}
@@ -260,6 +284,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
           }}
         >
           <GrainTruck cab={palette.truck} scale={2} />
+          {i === 0 ? <WorldTag text={labels.tagTrucks} position={[0, 13, 0]} /> : null}
         </Mover>
       ))}
 
@@ -275,6 +300,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
           }}
         >
           <GrainTruck cab={palette.truck} scale={2} />
+          {i === 0 ? <WorldTag text={labels.tagSale} position={[0, 13, 0]} /> : null}
         </Mover>
       ))}
       {visual.rained && scene.cue?.decision === "q11" ? (
@@ -340,7 +366,7 @@ function PestMarker({ label }: { label: string }) {
 }
 
 /** Cosechadora en zigzag con la tolva que se llena y se descarga cada dos pasadas. */
-function Harvester() {
+function Harvester({ label }: { label: string }) {
   const { palette } = useWorld();
   const { scene, progress, playing } = useStep();
   const group = useRef<Group>(null);
@@ -360,6 +386,8 @@ function Harvester() {
   return (
     <group ref={group}>
       <Combine ref={hopper} color={palette.contractor} scale={2.6} />
+      <Dust spread={22} color="grain" />
+      <WorldTag text={label} position={[0, 20, 0]} />
     </group>
   );
 }
