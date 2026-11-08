@@ -226,7 +226,9 @@ export function stationFor(
   if ((phase === "play" || phase === "feedback") && last) {
     return mission.decisions.find((d) => d.id === last.decision)?.station ?? "farm";
   }
-  return currentDecision(mission, campaign)?.station ?? "farm";
+  const upcoming = currentDecision(mission, campaign);
+  if (upcoming?.closeup) return "macro";
+  return upcoming?.station ?? "farm";
 }
 
 export { mission as MISSION };

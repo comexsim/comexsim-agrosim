@@ -78,6 +78,25 @@ describe("pantalla de la misión", () => {
     expect(cue && 2000 - cue.startedAt).toBe(cue?.duration);
   });
 
+  it("las decisiones de malezas, orugas y madurez se plantean con el primer plano del cultivo", () => {
+    const store = useMission.getState;
+    store().begin(0);
+    const seen: string[] = [];
+    for (let i = 0; i < 12; i += 1) {
+      const decision = store().campaign.step;
+      seen.push(`${decision}:${stationFor("decide", store().campaign, null)}`);
+      store().select("b");
+      store().confirm(i);
+      store().reveal();
+      store().next(i);
+    }
+    expect(seen.filter((entry) => entry.endsWith(":macro"))).toEqual([
+      "7:macro",
+      "9:macro",
+      "11:macro",
+    ]);
+  });
+
   it("ignora un historial de intentos dañado", () => {
     expect(parseAttempts("no es json")).toEqual([]);
     expect(parseAttempts('[{"score":80,"profit":"100","best":[]},{"x":1}]')).toHaveLength(1);

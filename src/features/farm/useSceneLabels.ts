@@ -18,6 +18,7 @@ export function useSceneLabels(): FarmLabels {
       field: t("field"),
       acopio: t("acopio"),
       plant: t("plant"),
+      closeup: t("closeup"),
       noAnalysis: t("noAnalysis"),
       noSeed: t("noSeed"),
       threshold: t("threshold"),

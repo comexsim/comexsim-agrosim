@@ -89,6 +89,8 @@ interface DecisionBase {
   /** Día de campaña en que se plantea. */
   day: number;
   station: StationId;
+  /** Mientras se decide, la cámara muestra el primer plano del cultivo. */
+  closeup?: boolean;
   cue: CueId;
   /** Puntos que vale en su dimensión. */
   points: number;

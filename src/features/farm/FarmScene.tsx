@@ -20,6 +20,7 @@ import { SceneProvider, useScene, type SceneSource } from "./clock";
 import { ACOPIO, FIELD, PLANT, ROAD, ROAD_Z, SHOTS, YARD } from "./layout";
 import { BagTruck, GrainTruck, Mover, Sprayer, TractorWith } from "./machines";
 import { followTarget } from "./follow";
+import { MacroPlot } from "./MacroPlot";
 import { SoyField } from "./SoyField";
 import { stepProgress } from "./visual";
 
@@ -29,6 +30,7 @@ export interface FarmLabels extends SceneLabels {
   field: string;
   acopio: string;
   plant: string;
+  closeup: string;
 }
 
 export interface FarmSceneProps {
@@ -71,6 +73,7 @@ export default function FarmScene({
         <Acopio />
         <OilPlant position={PLANT} />
         <Actors labels={labels} />
+        {station === "macro" ? <MacroPlot labels={labels} /> : null}
       </SceneProvider>
     </WorldStage>
   );

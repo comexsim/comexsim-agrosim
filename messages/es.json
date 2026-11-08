@@ -440,7 +440,8 @@
     "tagInputs": "Insumos",
     "hopper": "Tolva",
     "sample": "Muestra",
-    "grainMoisture": "Humedad del grano"
+    "grainMoisture": "Humedad del grano",
+    "closeup": "Vista de cerca · Lote"
   },
   "result": {
     "eyebrow": "Informe de campaña · AGRO #001",
