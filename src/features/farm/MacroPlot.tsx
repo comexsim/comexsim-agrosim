@@ -7,22 +7,20 @@ import type { Group, Mesh } from "three";
 import { cropLook } from "@/engine/growth";
 import { useSurface, useWorld } from "@/world/context";
 import { WorldTag } from "@/world/labels";
-import { Ground } from "@/world/nature";
 
 import { useScene } from "./clock";
-import { hash, MACRO } from "./layout";
+import { CLOSEUP, CLOSEUP_CENTER, hash, inCloseup, plantGrid, ROW_SPACING } from "./layout";
 import { weedLevel } from "./SoyField";
 import { stepProgress } from "./visual";
 
 /**
- * Primer plano del cultivo (observaciones O2 y O3): unas pocas plantas grandes y detalladas, en
- * un rincón aparte del mundo, que muestran lo que desde arriba no se ve. Las hojas trifoliadas
- * crecen por nudos, aparecen las flores y las vainas, amarillean y se secan; entre las hileras
- * brotan las malezas, y en la decisión de las orugas se ven las larvas comiendo las hojas.
+ * Primer plano del cultivo (observaciones O2 y O3): la lupa sobre el mismo lote. Las plantas del
+ * parche `CLOSEUP` se dibujan grandes y detalladas en su lugar de siempre (el lote las oculta
+ * mientras tanto) y la cámara solo se acerca. Las hojas trifoliadas crecen por nudos, aparecen
+ * las flores y las vainas, amarillean y se secan; entre las hileras brotan las malezas, y en la
+ * decisión de las orugas se ven las larvas comiendo las hojas.
  */
 
-const ROWS = [-6, 0, 6];
-const COLUMNS = [-12, -6, 0, 6, 12];
 const NODES = 5;
 
 interface PlantSpec {
@@ -32,36 +30,32 @@ interface PlantSpec {
 }
 
 export function MacroPlot({ labels }: { labels: { closeup: string; threshold: string } }) {
-  const { palette } = useWorld();
   const scene = useScene();
+  // Las mismas plantas del lote en el parche, con su posición y su ruido.
   const plants = useMemo<PlantSpec[]>(
     () =>
-      ROWS.flatMap((z, r) =>
-        COLUMNS.map((x, c) => ({ x: x + (hash(r, c) - 0.5) * 1.4, z, seed: hash(c, r + 9) })),
-      ),
+      plantGrid()
+        .filter((spot) => inCloseup(spot.x, spot.z))
+        .map((spot) => ({ x: spot.x + (spot.noise - 0.5) * 0.6, z: spot.z, seed: spot.noise })),
     [],
   );
+  const rows = useMemo(() => [...new Set(plants.map((plant) => plant.z))], [plants]);
   const weeds = useMemo(
     () =>
-      Array.from({ length: 16 }, (_, i) => ({
-        x: (hash(i, 3) - 0.5) * 30,
-        z: (i % 2 === 0 ? -3 : 3) + (hash(i, 4) - 0.5) * 1.6,
+      Array.from({ length: 12 }, (_, i) => ({
+        x: CLOSEUP.x[0] + hash(i, 3) * (CLOSEUP.x[1] - CLOSEUP.x[0]),
+        // Entre las hileras, no encima de las plantas.
+        z: (rows[i % Math.max(rows.length - 1, 1)] ?? CLOSEUP_CENTER[2]) + ROW_SPACING / 2,
         seed: hash(i, 5),
       })),
-    [],
+    [rows],
   );
   const showPests =
     scene.cue?.decision === "q10" ||
     (!scene.visual.answered.includes("q10") && scene.day() >= 52 && scene.day() < 62);
 
   return (
-    <group position={MACRO}>
-      <Ground size={[60, 44]} color={palette.grass} y={-0.01} />
-      <Ground
-        size={[38, 26]}
-        color={scene.visual.rained ? palette.soilWet : palette.soil}
-        y={0.02}
-      />
+    <group>
       {plants.map((plant) => (
         <MacroPlant key={`${plant.x},${plant.z}`} spec={plant} />
       ))}
@@ -69,8 +63,18 @@ export function MacroPlot({ labels }: { labels: { closeup: string; threshold: st
         <MacroWeed key={`${weed.x},${weed.z}`} spec={weed} />
       ))}
       {showPests || scene.visual.pest === "damage" ? <Caterpillars plants={plants} /> : null}
-      <WorldTag text={labels.closeup} tone="mine" position={[-10, 6, -10]} />
-      {showPests ? <WorldTag text={labels.threshold} tone="alert" position={[0, 6, 4]} /> : null}
+      <WorldTag
+        text={labels.closeup}
+        tone="mine"
+        position={[CLOSEUP_CENTER[0], 7.5, CLOSEUP.z[0]]}
+      />
+      {showPests ? (
+        <WorldTag
+          text={labels.threshold}
+          tone="alert"
+          position={[CLOSEUP_CENTER[0], 6.5, CLOSEUP.z[1]]}
+        />
+      ) : null}
     </group>
   );
 }
@@ -130,7 +134,8 @@ function MacroPlant({ spec }: { spec: PlantSpec }) {
           // Al secarse, las hojas caen; con la plaga quedan comidas.
           part.visible = look.ripeness < 1.7;
           const eaten = damaged && (i + Math.round(spec.seed * 10)) % 2 === 0 ? 0.55 : 1;
-          part.scale.setScalar((0.6 + height * 0.55) * eaten);
+          // Del tamaño de las plantas del lote que la rodean (hileras a 3,5 y plantas a 2,4).
+          part.scale.setScalar((0.45 + height * 0.5) * eaten);
           const blade = part.children[0] as Mesh | undefined;
           if (blade) blade.material = surface(leafColor, { rough: 0.8 });
         } else if (role === "flower") {
@@ -197,7 +202,7 @@ function MacroWeed({ spec }: { spec: { x: number; z: number; seed: number } }) {
       stepProgress(scene.visual, scene.cue, "q08", scene.now()) >= 1;
     const visible = !sprayed && spec.seed < level;
     current.visible = visible;
-    if (visible) current.scale.setScalar(0.6 + level * 0.9);
+    if (visible) current.scale.setScalar(0.45 + level * 0.6);
   });
   return (
     <group ref={group} position={[spec.x, 0, spec.z]} rotation={[0, spec.seed * 6, 0]}>
@@ -234,7 +239,7 @@ function Caterpillars({ plants }: { plants: PlantSpec[] }) {
   return (
     <group ref={group}>
       {hosts.map((host, i) => (
-        <group key={i} position={[host.x, 2.3 + (i % 2) * 0.6, host.z + 0.9]} scale={1.6}>
+        <group key={i} position={[host.x, 2.1 + (i % 2) * 0.6, host.z + 0.8]} scale={1.3}>
           {[0, 1, 2, 3, 4, 5].map((s) => (
             <mesh
               key={s}

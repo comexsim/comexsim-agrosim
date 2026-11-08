@@ -16,20 +16,35 @@ export const PASSES = 8;
 export const YARD: Vec3 = [-165, 0, -30];
 export const ACOPIO: Vec3 = [240, 0, 10];
 export const PLANT: Vec3 = [360, 0, -20];
-/** Diorama de primer plano del cultivo, lejos de la finca para que no se vea desde arriba. */
-export const MACRO: Vec3 = [-560, 0, 320];
 /** El camino corre a lo largo de X, al sur del lote. */
 export const ROAD_Z = 92;
 export const ROAD = { from: -280, to: 450 } as const;
 /** Sector del lote donde aparecen las orugas (esquina noreste). */
 export const PEST_SECTOR = { x: [15, 70], z: [-62, -17] } as const;
+/**
+ * Parche del primer plano, dentro del sector de las orugas: en la lupa, sus plantas se dibujan
+ * grandes y detalladas en el mismo lugar del lote, y la cámara solo se acerca (no cambia de
+ * parcela). Tres hileras de siete plantas.
+ */
+export const CLOSEUP = { x: [34.5, 51], z: [-42, -31.5] } as const;
+export const CLOSEUP_CENTER: Vec3 = [
+  (CLOSEUP.x[0] + CLOSEUP.x[1]) / 2,
+  0,
+  (CLOSEUP.z[0] + CLOSEUP.z[1]) / 2,
+];
+
+/** Si un punto del lote cae en el parche del primer plano. */
+export function inCloseup(x: number, z: number): boolean {
+  return x >= CLOSEUP.x[0] && x <= CLOSEUP.x[1] && z >= CLOSEUP.z[0] && z <= CLOSEUP.z[1];
+}
 
 export const SHOTS: Record<StationId, CameraShot> = {
   farm: isoShot([40, 0, 10], 480),
   field: isoShot([0, 0, 0], 250),
   // Cerca de la máquina que trabaja: la cámara la sigue y el resto del lote queda de fondo.
   follow: isoShot([0, 0, 0], 120),
-  macro: { target: MACRO, azimuth: ISO_AZIMUTH, polar: 1.12, span: 34 },
+  // La lupa: la misma cámara del lote, mucho más cerca del parche, con algo del lote alrededor.
+  macro: { target: CLOSEUP_CENTER, azimuth: ISO_AZIMUTH, polar: 1.1, span: 28 },
   yard: isoShot([YARD[0] + 10, 0, YARD[2] + 5], 120),
   acopio: isoShot([ACOPIO[0], 0, ACOPIO[2] + 10], 160),
   plant: isoShot([PLANT[0] - 10, 0, PLANT[2] + 10], 170),

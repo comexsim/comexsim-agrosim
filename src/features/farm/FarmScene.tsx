@@ -68,11 +68,11 @@ export default function FarmScene({
         <Fence />
         <PowerLine />
         <RoadTraffic />
-        <SoyField />
+        <SoyField closeup={station === "macro"} />
         <Yard />
         <Acopio />
         <OilPlant position={PLANT} />
-        <Actors labels={labels} />
+        <Actors labels={labels} closeup={station === "macro"} />
         {station === "macro" ? <MacroPlot labels={labels} /> : null}
       </SceneProvider>
     </WorldStage>
