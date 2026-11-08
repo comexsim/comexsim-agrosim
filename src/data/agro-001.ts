@@ -262,7 +262,7 @@ export const AGRO_001: Mission = {
           effects: { cost: "2800", concept: "nutrition", practice: false },
         },
         { key: "b", quality: "best", effects: { cost: "350", concept: "nutrition" } },
-        { key: "c", quality: "fair", effects: { condition: -3 } },
+        { key: "c", quality: "fair", cue: "idle", effects: { condition: -3 } },
       ],
     },
     {
@@ -288,7 +288,7 @@ export const AGRO_001: Mission = {
           },
         },
         { key: "b", quality: "best", cue: "spray-spot", effects: {} },
-        { key: "c", quality: "poor", effects: { flag: "pestUnchecked" } },
+        { key: "c", quality: "poor", cue: "idle", effects: { flag: "pestUnchecked" } },
       ],
     },
     {

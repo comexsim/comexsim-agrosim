@@ -26,6 +26,8 @@ export type CueId =
   | "spray-weeds"
   | "weeds-grow"
   | "scout"
+  /** Nadie entra al lote: la decisión fue no hacer nada. */
+  | "idle"
   | "spray-all"
   | "spray-spot"
   | "drone"

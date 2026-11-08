@@ -23,14 +23,14 @@ import { FIELD, hash, plantGrid } from "./layout";
 
 const scratch = new Object3D();
 const DROPS = 900;
-const dropGeometry = new BoxGeometry(0.12, 2.4, 0.12);
+const dropGeometry = new BoxGeometry(0.16, 4.2, 0.16);
 
 /** Lluvia: gotas que caen en bucle sobre el lote mientras `active()` sea verdadero. */
 export function Rain({ active }: { active: () => boolean }) {
   const { palette } = useWorld();
   const mesh = useRef<InstancedMesh>(null);
   const material = useMemo(
-    () => new MeshBasicMaterial({ color: palette.water, transparent: true, opacity: 0.55 }),
+    () => new MeshBasicMaterial({ color: palette.water, transparent: true, opacity: 0.75 }),
     [palette.water],
   );
   const seeds = useMemo(
@@ -63,40 +63,46 @@ export function Clouds({ active }: { active: () => boolean }) {
   const material = useMemo(
     () =>
       new MeshStandardMaterial({
-        color: new Color(palette.steel).lerp(new Color(palette.dark), 0.35),
+        color: new Color(palette.paint).lerp(new Color(palette.steel), 0.35),
         roughness: 1,
         transparent: true,
-        opacity: 0.55,
-        depthWrite: false,
+        opacity: 0.88,
       }),
-    [palette.steel, palette.dark],
+    [palette.paint, palette.steel],
   );
   useFrame(({ clock }) => {
     const current = group.current;
     if (!current) return;
     current.visible = active();
-    current.position.x = Math.sin(clock.elapsedTime * 0.15) * 12;
+    current.position.x = Math.sin(clock.elapsedTime * 0.12) * 14;
   });
+  // Cada nube es un racimo de esferas suaves: se lee como nube, no como roca ni granizo.
   const puffs = useMemo(
     () =>
-      Array.from({ length: 10 }, (_, i) => ({
-        x: (hash(i, 7) - 0.5) * 260,
-        z: (hash(i, 9) - 0.5) * 180,
-        s: 6 + hash(i, 11) * 7,
-      })),
+      Array.from({ length: 7 }, (_, cloud) => {
+        const cx = (hash(cloud, 7) - 0.5) * 300;
+        const cz = (hash(cloud, 9) - 0.5) * 200;
+        const size = 7 + hash(cloud, 11) * 5;
+        return Array.from({ length: 5 }, (_, i) => ({
+          x: cx + (i - 2) * size * 0.75,
+          y: (i % 2) * size * 0.35,
+          z: cz + (hash(cloud, i + 20) - 0.5) * size,
+          s: size * (i === 2 ? 1.25 : 0.8 + hash(cloud, i + 30) * 0.3),
+        }));
+      }).flat(),
     [],
   );
   return (
-    <group ref={group} position={[0, 62, 0]}>
+    <group ref={group} position={[0, 82, 0]}>
       {puffs.map((puff, i) => (
         <mesh
           key={i}
           material={material}
-          position={[puff.x, 0, puff.z]}
-          scale={[puff.s * 1.6, puff.s * 0.6, puff.s]}
+          position={[puff.x, puff.y, puff.z]}
+          scale={[puff.s, puff.s * 0.62, puff.s]}
           castShadow
         >
-          <icosahedronGeometry args={[1, 1]} />
+          <sphereGeometry args={[1, 14, 10]} />
         </mesh>
       ))}
     </group>

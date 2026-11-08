@@ -57,10 +57,12 @@ const SCOUT_PATH: Vec3[] = [
   [-FIELD.width / 2 - 6, 0, -10],
   [-30, 0, -10],
   [20, 0, -30],
-  [PEST_SECTOR.x[0] + 10, 0, -40],
+  [PEST_SECTOR.x[0] - 10, 0, -40],
 ];
 
 const PEST_PASSES = passPath(PEST_SECTOR.x, PEST_SECTOR.z, 3, 4);
+/** En la aplicación focalizada, primero monitorea el técnico y después entra la pulverizadora. */
+const SCOUT_SHARE = 0.4;
 
 function useStep() {
   const scene = useScene();
@@ -213,13 +215,16 @@ export function Actors({ labels }: { labels: SceneLabels }) {
         path={SCOUT_PATH}
         progress={() => {
           const cue = scene.cue;
-          return cue ? progress(cue.decision) : 0;
+          if (!cue) return 0;
+          const p = progress(cue.decision);
+          return cue.id === "spray-spot" ? Math.min(p / SCOUT_SHARE, 1) : p;
         }}
         visible={() => {
+          // Solo cuando se decidió monitorear: si se aplica, sale la pulverizadora sin el técnico.
           const cue = scene.cue;
-          return (
-            !!cue && (cue.decision === "q09" || cue.decision === "q10") && playing(cue.decision)
-          );
+          if (!cue || !playing(cue.decision)) return false;
+          if (cue.id === "scout") return true;
+          return cue.id === "spray-spot" && progress(cue.decision) < SCOUT_SHARE;
         }}
       >
         <Person shirt={palette.mine} scale={4.5} />
@@ -228,8 +233,8 @@ export function Actors({ labels }: { labels: SceneLabels }) {
       <PestMarker label={labels.threshold} />
       <Mover
         path={PEST_PASSES}
-        progress={() => progress("q10")}
-        visible={() => playing("q10", "spray-spot")}
+        progress={() => Math.max((progress("q10") - SCOUT_SHARE) / (1 - SCOUT_SHARE), 0)}
+        visible={() => playing("q10", "spray-spot") && progress("q10") >= SCOUT_SHARE}
       >
         <group scale={2.2}>
           <Sprayer color={palette.mine} />
