@@ -66,6 +66,18 @@ describe("pantalla de la misión", () => {
     expect(store().phase).toBe("briefing");
   });
 
+  it("saltar la animación muestra la consecuencia con la animación terminada", () => {
+    const store = useMission.getState;
+    store().begin(0);
+    store().select("b");
+    store().confirm(1000);
+    expect(stationFor("play", store().campaign, store().last, store().cue)).toBe("follow");
+    store().skip(2000);
+    expect(store().phase).toBe("feedback");
+    const cue = store().cue;
+    expect(cue && 2000 - cue.startedAt).toBe(cue?.duration);
+  });
+
   it("ignora un historial de intentos dañado", () => {
     expect(parseAttempts("no es json")).toEqual([]);
     expect(parseAttempts('[{"score":80,"profit":"100","best":[]},{"x":1}]')).toHaveLength(1);

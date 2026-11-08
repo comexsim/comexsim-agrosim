@@ -19,6 +19,7 @@ import { Dryer, House, OilPlant, Scale, Shed, Silo } from "./buildings";
 import { SceneProvider, useScene, type SceneSource } from "./clock";
 import { ACOPIO, FIELD, PLANT, ROAD, ROAD_Z, SHOTS, YARD } from "./layout";
 import { BagTruck, GrainTruck, Mover, Sprayer, TractorWith } from "./machines";
+import { followTarget } from "./follow";
 import { SoyField } from "./SoyField";
 import { stepProgress } from "./visual";
 
@@ -55,6 +56,7 @@ export default function FarmScene({
     <WorldStage
       label={labels.scene}
       shot={SHOTS[station]}
+      follow={followTarget}
       insets={insets}
       interactive={interactive}
       fallback={fallback}

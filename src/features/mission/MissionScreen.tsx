@@ -108,7 +108,7 @@ export function MissionScreen({ presentation = false }: { presentation?: boolean
         <div className={styles.sceneLayer}>
           <FarmScene
             source={source}
-            station={stationFor(phase, campaign, last)}
+            station={stationFor(phase, campaign, last, cue)}
             labels={labels}
             insets={insets}
             fallback={<FlatFarm day={day} harvested={campaign.answers.q14 !== undefined} />}

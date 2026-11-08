@@ -28,6 +28,7 @@ import {
   YARD,
 } from "./layout";
 import { BagTruck, Combine, Drone, GrainTruck, Mover, Sprayer, TractorWith } from "./machines";
+import { trackVehicle } from "./follow";
 import { stepProgress } from "./visual";
 
 export interface SceneLabels {
@@ -97,6 +98,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
     <>
       {/* q01 · muestreo de suelo */}
       <Mover
+        track
         path={SAMPLE_POINTS}
         progress={() => progress("q01")}
         visible={() => playing("q01", "sampling")}
@@ -113,6 +115,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
 
       {/* q02 · fertilizante: llega el camión y la fertilizadora recorre el lote */}
       <Mover
+        track
         path={ROAD_TO_YARD}
         progress={() => Math.min(progress("q02") / 0.35, 1)}
         visible={() => playing("q02") && progress("q02") < 0.35}
@@ -121,6 +124,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
         <WorldTag text={labels.tagInputs} position={[0, 10, 0]} />
       </Mover>
       <Mover
+        track
         path={FIELD_PASSES}
         progress={() => Math.max((progress("q02") - 0.35) / 0.65, 0)}
         visible={() => playing("q02") && progress("q02") >= 0.35}
@@ -139,6 +143,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
 
       {/* q03 · preparación: rastra (labranza) o pulverizadora (barbecho de la siembra directa) */}
       <Mover
+        track
         path={FIELD_PASSES}
         progress={() => progress("q03")}
         visible={() => playing("q03", "till")}
@@ -148,6 +153,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
         <WorldTag text={labels.tagHarrow} tone="mine" position={[0, 16, 0]} />
       </Mover>
       <Mover
+        track
         path={FIELD_PASSES}
         progress={() => progress("q03")}
         visible={() => playing("q03", "notill")}
@@ -160,7 +166,12 @@ export function Actors({ labels }: { labels: SceneLabels }) {
       </Mover>
 
       {/* q04 · llegan las bolsas de semilla */}
-      <Mover path={ROAD_TO_YARD} progress={() => progress("q04")} visible={() => playing("q04")}>
+      <Mover
+        track
+        path={ROAD_TO_YARD}
+        progress={() => progress("q04")}
+        visible={() => playing("q04")}
+      >
         <BagTruck
           cab={palette.truck}
           bag={scene.cue?.quality === "best" ? palette.mine : palette.straw}
@@ -211,6 +222,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
 
       {/* q07 · siembra: la sembradora recorre el lote hasta donde alcanza la semilla */}
       <Mover
+        track
         path={FIELD_PASSES}
         progress={() => Math.min(progress("q07"), sownShare)}
         visible={() => playing("q07")}
@@ -225,6 +237,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
 
       {/* q08, q09, q10, q11 · pulverizadora en todo el lote */}
       <Mover
+        track
         path={FIELD_PASSES}
         progress={() => {
           const cue = scene.cue;
@@ -246,6 +259,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
 
       {/* q09 y q10 · el técnico recorre el lote */}
       <Mover
+        track
         path={SCOUT_PATH}
         progress={() => {
           const cue = scene.cue;
@@ -266,6 +280,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
       </Mover>
       <PestMarker label={labels.threshold} />
       <Mover
+        track
         path={PEST_PASSES}
         progress={() => Math.max((progress("q10") - SCOUT_SHARE) / (1 - SCOUT_SHARE), 0)}
         visible={() => playing("q10", "spray-spot") && progress("q10") >= SCOUT_SHARE}
@@ -278,7 +293,12 @@ export function Actors({ labels }: { labels: SceneLabels }) {
       </Mover>
 
       {/* q11 · el dron sobrevuela y deja el mapa de riesgo */}
-      <Mover path={FIELD_PASSES} progress={() => progress("q11")} visible={() => playing("q11")}>
+      <Mover
+        track
+        path={FIELD_PASSES}
+        progress={() => progress("q11")}
+        visible={() => playing("q11")}
+      >
         <Drone color={palette.mine} scale={3.6} position={[0, 18, 0]} />
         <WorldTag text={labels.tagDrone} tone="mine" position={[0, 28, 0]} />
       </Mover>
@@ -469,6 +489,7 @@ function Harvester({ label }: { label: string }) {
     const current = group.current;
     if (!current) return;
     current.visible = playing("q14");
+    trackVehicle(current, current.visible);
     if (!current.visible) return;
     const p = Math.min(progress("q14"), scene.visual.sownShare);
     const sample = samplePath(FIELD_PASSES, p);

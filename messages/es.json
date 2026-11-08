@@ -137,7 +137,8 @@
     "spent": "Gasto de esta decisión",
     "event": "Evento de campaña",
     "select": "Elige una opción",
-    "overBudget": "Superaste el capital disponible por {amount}: la campaña necesita financiamiento que no estaba previsto."
+    "overBudget": "Superaste el capital disponible por {amount}: la campaña necesita financiamiento que no estaba previsto.",
+    "skip": "Saltar animación"
   },
   "events": {
     "pestsFocal": {

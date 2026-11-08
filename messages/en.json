@@ -137,7 +137,8 @@
     "spent": "Spent on this decision",
     "event": "Season event",
     "select": "Choose an option",
-    "overBudget": "You exceeded the available capital by {amount}: the season needs financing that wasn't planned."
+    "overBudget": "You exceeded the available capital by {amount}: the season needs financing that wasn't planned.",
+    "skip": "Skip animation"
   },
   "events": {
     "pestsFocal": {

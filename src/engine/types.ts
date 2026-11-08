@@ -10,7 +10,9 @@ export type Quality = "best" | "fair" | "poor";
 export type DecisionId = `q${string}`;
 
 /** Estaciones de la cámara: dónde mira la escena en cada decisión. */
-export type StationId = "farm" | "yard" | "field" | "acopio" | "plant" | "result";
+/** `follow`: plano cercano que acompaña a la máquina que trabaja; `macro`: primer plano del cultivo. */
+export type StationId =
+  "farm" | "yard" | "field" | "follow" | "macro" | "acopio" | "plant" | "result";
 
 /** Animaciones de la finca que dispara una decisión (las dibuja `features/farm`). */
 export type CueId =
