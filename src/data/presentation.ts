@@ -1,4 +1,4 @@
-import type { DecisionId, Quality } from "@/engine/types";
+import type { DecisionId, OptionKey } from "@/engine/types";
 
 /**
  * Guion del Modo Presentación: un recorrido guiado de unos 6 minutos para mostrar la demo sin
@@ -7,7 +7,11 @@ import type { DecisionId, Quality } from "@/engine/types";
  */
 export const PRESENTATION_SEED = 0;
 
-export const PRESENTATION_PICKS: Partial<Record<DecisionId, Quality>> = { q08: "poor" };
+/**
+ * Opciones elegidas a propósito, por clave (las letras de la pantalla cambian con el orden):
+ * en q08, «esperar a que la soya tape las malezas».
+ */
+export const PRESENTATION_PICKS: Partial<Record<DecisionId, OptionKey>> = { q08: "a" };
 
 /** Pausas en milisegundos antes de cada acción. */
 export const PRESENTATION_BEATS = {
