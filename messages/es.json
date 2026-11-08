@@ -138,7 +138,13 @@
     "event": "Evento de campaña",
     "select": "Elige una opción",
     "overBudget": "Superaste el capital disponible por {amount}: la campaña necesita financiamiento que no estaba previsto.",
-    "skip": "Saltar animación"
+    "skip": "Saltar animación",
+    "accelerated": "Tiempo acelerado",
+    "speed": {
+      "label": "Velocidad",
+      "normal": "Normal",
+      "fast": "Rápida"
+    }
   },
   "events": {
     "pestsFocal": {

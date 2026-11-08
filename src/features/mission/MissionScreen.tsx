@@ -15,7 +15,7 @@ import { AppBar } from "@/features/shell/AppBar";
 import { Briefing } from "./Briefing";
 import { DecisionPanel } from "./DecisionPanel";
 import { FlatFarm } from "./FlatFarm";
-import { useAnimatedDay } from "./hooks";
+import { useAccelerated, useAnimatedDay } from "./hooks";
 import styles from "./Hud.module.css";
 import { Kpis } from "./Kpis";
 import { Logbook } from "./Logbook";
@@ -35,6 +35,16 @@ function SceneLoading() {
     <div className={styles.loading} role="status">
       <span className={styles.spinner} />
       {t("loading")}
+    </div>
+  );
+}
+
+/** Aviso sobre la escena: el resto del trabajo avanza en tiempo acelerado. */
+function AcceleratedChip() {
+  const t = useTranslations("decision");
+  return (
+    <div className={styles.accelerated} role="status">
+      <span aria-hidden>⏩</span> {t("accelerated")}
     </div>
   );
 }
@@ -67,6 +77,7 @@ export function MissionScreen({ presentation = false }: { presentation?: boolean
   const labels = useSceneLabels();
   const wide = useInsets();
   const day = useAnimatedDay(timeline);
+  const accelerated = useAccelerated(phase === "play" ? cue : null);
 
   useEffect(() => {
     if (presentation) startPresentation();
@@ -108,12 +119,13 @@ export function MissionScreen({ presentation = false }: { presentation?: boolean
         <div className={styles.sceneLayer}>
           <FarmScene
             source={source}
-            station={stationFor(phase, campaign, last, cue)}
+            station={stationFor(phase, campaign, last, cue, accelerated)}
             labels={labels}
             insets={insets}
             fallback={<FlatFarm day={day} harvested={campaign.answers.q14 !== undefined} />}
           />
         </div>
+        {accelerated ? <AcceleratedChip /> : null}
         {phase === "briefing" ? <Briefing /> : null}
         {hud ? (
           <>

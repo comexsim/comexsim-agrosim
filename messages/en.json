@@ -138,7 +138,13 @@
     "event": "Season event",
     "select": "Choose an option",
     "overBudget": "You exceeded the available capital by {amount}: the season needs financing that wasn't planned.",
-    "skip": "Skip animation"
+    "skip": "Skip animation",
+    "accelerated": "Time-lapse",
+    "speed": {
+      "label": "Speed",
+      "normal": "Normal",
+      "fast": "Fast"
+    }
   },
   "events": {
     "pestsFocal": {
