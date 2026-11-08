@@ -34,7 +34,9 @@ El estudiante administra una campaña de soya de **100 ha en Santa Cruz** (Misi�
   - planta aceitera.
 - **Tres eventos:** plaga, lluvia excesiva y variación del precio. El precio cambia en cada intento, para que no se memorice la respuesta.
 - **Informe final:** costos por concepto, ingresos, utilidad, margen, puntaje en siete dimensiones, dónde se perdió y comparación con el intento anterior. Los intentos se guardan en el navegador.
-- **Modo Presentación:** un recorrido guiado de unos 6 minutos, con narración en pantalla y botones para pausar y salir. Se abre desde la portada o en `/mision/agro-001?presentacion=1`. Toma las decisiones recomendadas y comete un error a propósito (ignorar las malezas), para mostrar su costo. No cuenta como intento.
+- **Modo Presentación:** un recorrido guiado de unos 7 minutos, con narración en pantalla y botones para pausar y salir. Se abre desde la portada o en `/mision/agro-001?presentacion=1`. Toma las decisiones recomendadas y comete un error a propósito (ignorar las malezas), para mostrar su costo. No cuenta como intento.
+- **Ritmo y cámara:** mientras trabaja una máquina, la cámara se acerca y la sigue, y un botón «Saltar animación» permite avanzar. En las decisiones de malezas, orugas y madurez, la cámara muestra el cultivo de cerca: plantas detalladas, malezas y larvas.
+- **Opciones mezcladas:** el orden de A, B y C cambia en cada intento, y la recomendada no es la de texto más largo.
 - **Español e inglés.** Abre en modo claro, con opción de oscuro. Si el equipo no tiene GPU, se muestra un respaldo 2D.
 
 ## Desplegar en Vercel
@@ -73,7 +75,7 @@ corepack pnpm lint && corepack pnpm typecheck && corepack pnpm build
 
 ## Rendimiento medido
 
-Recorrido guiado completo a 1366×768 en un portátil con Intel HD Graphics 620 (2026-11-04): mediana de 54 FPS y bajadas breves hasta 26 FPS, con la calidad adaptativa activa. La demo no llega a 60 FPS sostenidos en esa GPU, aunque el recorrido se ve fluido.
+Recorrido guiado completo a 1366×768 en un portátil con Intel HD Graphics 620 (2026-11-08): mediana de 57 FPS y bajadas breves hasta 39 FPS, con la calidad adaptativa activa. No llega a 60 FPS sostenidos en esa GPU, pero el recorrido se ve fluido.
 
 ## Cómo se calibró la misión
 
