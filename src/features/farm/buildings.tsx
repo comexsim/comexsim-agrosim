@@ -1,9 +1,21 @@
 "use client";
 
+import { DoubleSide, Shape } from "three";
+
 import { useWorld } from "@/world/context";
 import { Box, Cylinder, type GroupProps } from "@/world/primitives";
 
 /** Construcciones de la finca, el acopio y la planta aceitera, con primitivas. */
+
+/** Triángulo del hastial: base `depth` sobre la pared y 3 m de alto hasta la cumbrera. */
+function gable(depth: number): Shape {
+  const shape = new Shape();
+  shape.moveTo(-depth / 2, 0);
+  shape.lineTo(depth / 2, 0);
+  shape.lineTo(0, 3);
+  shape.closePath();
+  return shape;
+}
 
 /** Galpón con techo a dos aguas, abierto al frente (+X). */
 export function Shed({
@@ -23,7 +35,7 @@ export function Shed({
       <Box
         size={[width + 1, 0.3, rafter]}
         at={[0, height + 1.4, -depth / 4]}
-        rotation={[slope, 0, 0]}
+        rotation={[-slope, 0, 0]}
         color={palette.roofMetal}
         metal={0.3}
         rough={0.5}
@@ -31,11 +43,25 @@ export function Shed({
       <Box
         size={[width + 1, 0.3, rafter]}
         at={[0, height + 1.4, depth / 4]}
-        rotation={[-slope, 0, 0]}
+        rotation={[slope, 0, 0]}
         color={palette.roofMetal}
         metal={0.3}
         rough={0.5}
       />
+      {[-width / 2, width / 2].map((x) => (
+        <mesh key={x} position={[x, height, 0]} rotation={[0, Math.PI / 2, 0]} castShadow>
+          <shapeGeometry args={[gable(depth)]} />
+          <meshStandardMaterial color={palette.wall2} roughness={0.85} side={DoubleSide} />
+        </mesh>
+      ))}
+      {[-width / 4, width / 4].map((x) => (
+        <Box
+          key={x}
+          size={[0.5, height, 0.5]}
+          at={[width / 2 - 0.4, 0, x / 2]}
+          color={palette.steel}
+        />
+      ))}
       <Box
         size={[width - 1, 0.05, depth - 1]}
         at={[0, 0.02, 0]}

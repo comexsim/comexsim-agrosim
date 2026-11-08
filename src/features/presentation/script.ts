@@ -1,6 +1,6 @@
 import { PRESENTATION_BEATS, PRESENTATION_PICKS } from "@/data/presentation";
 import { currentDecision, optionsFor } from "@/engine/campaign";
-import type { CampaignState, Mission, OptionKey, Quality } from "@/engine/types";
+import type { CampaignState, Mission, OptionKey } from "@/engine/types";
 
 /**
  * Qué haría ahora el presentador. Puro: el director de la interfaz solo espera la pausa y
@@ -33,9 +33,12 @@ export function nextScriptStep(mission: Mission, input: ScriptInput): ScriptStep
   if (selected) return { action: { type: "confirm" }, wait: PRESENTATION_BEATS.choose };
   const decision = currentDecision(mission, campaign);
   if (!decision) return null;
-  const wanted: Quality = PRESENTATION_PICKS[decision.id] ?? "best";
   const options = optionsFor(mission, campaign, decision);
-  const option = options.find((candidate) => candidate.quality === wanted) ?? options[0];
+  const forced = PRESENTATION_PICKS[decision.id];
+  const option =
+    options.find((candidate) => candidate.key === forced) ??
+    options.find((candidate) => candidate.quality === "best") ??
+    options[0];
   if (!option) return null;
   return { action: { type: "select", key: option.key }, wait: PRESENTATION_BEATS.read };
 }

@@ -10,7 +10,9 @@ export type Quality = "best" | "fair" | "poor";
 export type DecisionId = `q${string}`;
 
 /** Estaciones de la cámara: dónde mira la escena en cada decisión. */
-export type StationId = "farm" | "yard" | "field" | "acopio" | "plant" | "result";
+/** `follow`: plano cercano que acompaña a la máquina que trabaja; `macro`: primer plano del cultivo. */
+export type StationId =
+  "farm" | "yard" | "field" | "follow" | "macro" | "acopio" | "plant" | "result";
 
 /** Animaciones de la finca que dispara una decisión (las dibuja `features/farm`). */
 export type CueId =
@@ -26,6 +28,8 @@ export type CueId =
   | "spray-weeds"
   | "weeds-grow"
   | "scout"
+  /** Nadie entra al lote: la decisión fue no hacer nada. */
+  | "idle"
   | "spray-all"
   | "spray-spot"
   | "drone"
@@ -85,6 +89,8 @@ interface DecisionBase {
   /** Día de campaña en que se plantea. */
   day: number;
   station: StationId;
+  /** Mientras se decide, la cámara muestra el primer plano del cultivo. */
+  closeup?: boolean;
   cue: CueId;
   /** Puntos que vale en su dimensión. */
   points: number;

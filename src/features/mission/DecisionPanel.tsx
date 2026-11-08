@@ -57,6 +57,7 @@ function Question() {
   const cue = useMission((state) => state.cue);
   const select = useMission((state) => state.select);
   const confirm = useMission((state) => state.confirm);
+  const skip = useMission((state) => state.skip);
 
   // Durante la animación, el panel sigue mostrando la decisión recién confirmada.
   const playing = phase === "play" && last;
@@ -89,7 +90,7 @@ function Question() {
 
       {options ? (
         <div role="radiogroup" aria-label={t("decision.select")} className={styles.options}>
-          {options.map((option) => {
+          {options.map((option, position) => {
             const label = t.has(`${prefix}.option`)
               ? t(`${prefix}.option`, params.option(decision, option))
               : t(`${prefix}.${option.key}`, params.option(decision, option));
@@ -103,7 +104,7 @@ function Question() {
                 className={styles.option}
                 onClick={() => select(option.key)}
               >
-                <span className={styles.letter}>{option.key.toUpperCase()}</span>
+                <span className={styles.letter}>{"ABC"[position]}</span>
                 <span className={styles.optionText}>{label}</span>
                 {showMoney ? (
                   <span className={styles.optionCost}>
@@ -127,6 +128,9 @@ function Question() {
           <div className={styles.playBar}>
             <i style={{ animationDuration: `${cue?.duration ?? 4000}ms` }} />
           </div>
+          <Button variant="secondary" block onClick={() => skip(performance.now())}>
+            {t("decision.skip")}
+          </Button>
         </div>
       )}
 

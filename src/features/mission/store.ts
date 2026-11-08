@@ -12,7 +12,7 @@ import {
 } from "@/engine/campaign";
 import { summarize, type AttemptSummary } from "@/engine/report";
 import type { CampaignState, DecisionId, OptionKey, StationId } from "@/engine/types";
-import { CUE_DURATION, DEFAULT_CUE_DURATION } from "@/features/farm/cues";
+import { CUE_DURATION, DEFAULT_CUE_DURATION, FOLLOW_CUES } from "@/features/farm/cues";
 import type { ActiveCue } from "@/features/farm/visual";
 
 import { loadAttempts, saveAttempts } from "./attempts";
@@ -54,6 +54,8 @@ interface MissionStore {
   select: (key: OptionKey) => void;
   confirm: (now: number) => void;
   reveal: () => void;
+  /** Termina la animación en curso y muestra la consecuencia. */
+  skip: (now: number) => void;
   next: (now: number) => void;
   restart: () => void;
   startPresentation: () => void;
@@ -136,6 +138,16 @@ export const useMission = create<MissionStore>((set, get) => ({
     if (get().phase === "play") set({ phase: "feedback" });
   },
 
+  skip: (now) => {
+    const { phase, cue, timeline } = get();
+    if (phase !== "play" || !cue) return;
+    set({
+      phase: "feedback",
+      cue: { ...cue, startedAt: now - cue.duration },
+      timeline: { ...timeline, startedAt: now - timeline.duration },
+    });
+  },
+
   next: (now) => {
     const { campaign, attempts, phase, presenting } = get();
     if (phase !== "feedback") return;
@@ -206,13 +218,17 @@ export function stationFor(
   phase: Phase,
   campaign: CampaignState,
   last: LastDecision | null,
+  cue: ActiveCue | null = null,
 ): StationId {
   if (phase === "briefing") return "farm";
   if (phase === "result") return "result";
+  if (phase === "play" && cue && FOLLOW_CUES.has(cue.id)) return "follow";
   if ((phase === "play" || phase === "feedback") && last) {
     return mission.decisions.find((d) => d.id === last.decision)?.station ?? "farm";
   }
-  return currentDecision(mission, campaign)?.station ?? "farm";
+  const upcoming = currentDecision(mission, campaign);
+  if (upcoming?.closeup) return "macro";
+  return upcoming?.station ?? "farm";
 }
 
 export { mission as MISSION };

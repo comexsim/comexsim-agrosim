@@ -1,13 +1,16 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo } from "react";
+
+import type { Locale } from "@/i18n/locale";
 
 import type { FarmLabels } from "./FarmScene";
 
 /** Textos que la escena dibuja en el mundo (letreros y avisos), ya traducidos. */
 export function useSceneLabels(): FarmLabels {
   const t = useTranslations("scene");
+  const locale = useLocale() as Locale;
   return useMemo(
     () => ({
       scene: t("label"),
@@ -15,6 +18,7 @@ export function useSceneLabels(): FarmLabels {
       field: t("field"),
       acopio: t("acopio"),
       plant: t("plant"),
+      closeup: t("closeup"),
       noAnalysis: t("noAnalysis"),
       noSeed: t("noSeed"),
       threshold: t("threshold"),
@@ -30,7 +34,11 @@ export function useSceneLabels(): FarmLabels {
       tagTrucks: t("tagTrucks"),
       tagSale: t("tagSale"),
       tagInputs: t("tagInputs"),
+      hopper: t("hopper"),
+      sample: t("sample"),
+      grainMoisture: t("grainMoisture"),
+      locale,
     }),
-    [t],
+    [t, locale],
   );
 }

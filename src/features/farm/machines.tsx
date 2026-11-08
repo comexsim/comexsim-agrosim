@@ -9,6 +9,8 @@ import { useWorld } from "@/world/context";
 import { Box, Cylinder, Wheel, type GroupProps } from "@/world/primitives";
 import { samplePath } from "@/world/path";
 
+import { trackVehicle } from "./follow";
+
 /**
  * Maquinaria agrícola low-poly hecha con primitivas (hasta que haya un pack CC0 recoloreado).
  * Todas miran a +X y apoyan en Y = 0. Lo del estudiante va en el verde de marca; lo contratado,
@@ -18,14 +20,22 @@ import { samplePath } from "@/world/path";
 /** Mueve a su hijo por un recorrido según el avance (0–1) que devuelve `progress` cada cuadro. */
 export const Mover = forwardRef<
   Group,
-  { path: readonly Vec3[]; progress: () => number; children: ReactNode; visible?: () => boolean }
->(function Mover({ path, progress, children, visible }, forwarded) {
+  {
+    path: readonly Vec3[];
+    progress: () => number;
+    children: ReactNode;
+    visible?: () => boolean;
+    /** Mientras se ve, la cámara lo sigue de cerca. */
+    track?: boolean;
+  }
+>(function Mover({ path, progress, children, visible, track = false }, forwarded) {
   const local = useRef<Group>(null);
   useFrame(() => {
     const group = local.current;
     if (!group) return;
     const shown = visible ? visible() : true;
     group.visible = shown;
+    if (track) trackVehicle(group, shown);
     if (!shown) return;
     const sample = samplePath(path, progress());
     group.position.set(...sample.position);

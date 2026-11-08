@@ -1,4 +1,4 @@
-import { isoShot, type CameraShot, type Vec3 } from "@/world/camera";
+import { ISO_AZIMUTH, isoShot, type CameraShot, type Vec3 } from "@/world/camera";
 import type { StationId } from "@/engine/types";
 
 /**
@@ -16,6 +16,8 @@ export const PASSES = 8;
 export const YARD: Vec3 = [-165, 0, -30];
 export const ACOPIO: Vec3 = [240, 0, 10];
 export const PLANT: Vec3 = [360, 0, -20];
+/** Diorama de primer plano del cultivo, lejos de la finca para que no se vea desde arriba. */
+export const MACRO: Vec3 = [-560, 0, 320];
 /** El camino corre a lo largo de X, al sur del lote. */
 export const ROAD_Z = 92;
 export const ROAD = { from: -280, to: 450 } as const;
@@ -25,6 +27,9 @@ export const PEST_SECTOR = { x: [15, 70], z: [-62, -17] } as const;
 export const SHOTS: Record<StationId, CameraShot> = {
   farm: isoShot([40, 0, 10], 480),
   field: isoShot([0, 0, 0], 250),
+  // Cerca de la máquina que trabaja: la cámara la sigue y el resto del lote queda de fondo.
+  follow: isoShot([0, 0, 0], 120),
+  macro: { target: MACRO, azimuth: ISO_AZIMUTH, polar: 1.12, span: 34 },
   yard: isoShot([YARD[0] + 10, 0, YARD[2] + 5], 120),
   acopio: isoShot([ACOPIO[0], 0, ACOPIO[2] + 10], 160),
   plant: isoShot([PLANT[0] - 10, 0, PLANT[2] + 10], 170),

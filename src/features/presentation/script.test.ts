@@ -39,6 +39,8 @@ describe("guion del Modo Presentación", () => {
     const report = buildReport(AGRO_001, campaign);
     expect(seen.size).toBe(18);
     expect(report.mistakes.map((mistake) => mistake.decision)).toEqual(["q08"]);
+    // El error que se muestra es ignorar las malezas, como dice la narración.
+    expect(campaign.answers.q08?.key).toBe("a");
     expect(Number(report.profit)).toBeGreaterThan(0);
     expect(report.score).toBeGreaterThanOrEqual(85);
   });

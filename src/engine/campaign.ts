@@ -116,6 +116,27 @@ function effectsCost(mission: Mission, state: CampaignState, effects: Effects): 
   return cost;
 }
 
+/** Las seis formas de ordenar tres opciones. */
+const ORDERS: readonly (readonly [number, number, number])[] = [
+  [0, 1, 2],
+  [0, 2, 1],
+  [1, 0, 2],
+  [1, 2, 0],
+  [2, 0, 1],
+  [2, 1, 0],
+];
+
+/**
+ * Mezcla tres opciones con la semilla del intento y el número de decisión: la recomendada cae en
+ * cualquier lugar y sin un patrón que se pueda memorizar entre una decisión y la siguiente.
+ */
+export function shuffle<T>(values: readonly T[], seed: number, salt: number): T[] {
+  if (values.length !== 3) return [...values];
+  const mixed = (Math.imul(seed + 1, 2654435761) ^ Math.imul(salt + 1, 40503)) >>> 0;
+  const order = ORDERS[mixed % ORDERS.length] ?? ORDERS[0];
+  return (order ?? [0, 1, 2]).map((i) => values[i] as T);
+}
+
 /** Ordena tres valores con la semilla, para que la respuesta correcta no esté siempre en el medio. */
 function arrange<T>(values: readonly [T, T, T], seed: number, salt: number): T[] {
   const shift = (seed + salt) % 3;
@@ -174,7 +195,7 @@ export function optionsFor(
   switch (decision.kind) {
     case "choice":
     case "calc":
-      return decision.options.map((option) => ({
+      return shuffle(decision.options, state.seed, index).map((option) => ({
         key: option.key,
         quality: option.quality,
         cost: usd(effectsCost(mission, state, option.effects)),
@@ -213,13 +234,14 @@ export function optionsFor(
     case "sale": {
       const offers = saleOffers(mission, state);
       const qualities = rankQualities(offers.map((offer) => offer.gross.minus(offer.cost)));
-      return offers.map((offer, i) => ({
+      const resolved = offers.map((offer, i) => ({
         key: offer.key,
         quality: qualities[i] ?? "poor",
         cost: usd(offer.cost),
         params: { price: offer.price.toNumber() },
         value: usd(offer.gross.minus(offer.cost)),
       }));
+      return shuffle(resolved, state.seed, index);
     }
     case "result": {
       const profit = new Decimal(state.revenue ?? 0).minus(totalCosts(state));

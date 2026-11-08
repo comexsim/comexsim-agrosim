@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import { AGRO_001 } from "@/data/agro-001";
 
 import {
+  shuffle,
   applyDecision,
   createCampaign,
   currentDecision,
@@ -192,5 +193,41 @@ describe("comparación de intentos", () => {
     const improved = improvedDecisions(first, second);
     expect(improved.length).toBeGreaterThan(12);
     expect(second.score).toBeGreaterThan(first.score);
+  });
+});
+
+describe("orden de las opciones", () => {
+  it("la recomendada cae en las tres posiciones según el intento, en cada decisión fija", () => {
+    for (const [index, decision] of mission.decisions.entries()) {
+      if (decision.kind !== "choice" && decision.kind !== "calc") continue;
+      const positions = new Set(
+        Array.from({ length: 30 }, (_, seed) =>
+          shuffle(decision.options, seed, index).findIndex((o) => o.quality === "best"),
+        ),
+      );
+      expect(positions.size, decision.id).toBe(3);
+    }
+  });
+
+  it("en un mismo intento la recomendada no está siempre en el mismo lugar", () => {
+    for (const seed of [0, 1, 2, 3]) {
+      let state = createCampaign(mission, seed);
+      const positions = new Set<number>();
+      while (!isFinished(mission, state)) {
+        const decision = currentDecision(mission, state);
+        if (!decision) break;
+        const options = optionsFor(mission, state, decision);
+        const best = options.findIndex((o) => o.quality === "best");
+        if (decision.kind === "choice" || decision.kind === "calc") positions.add(best);
+        state = applyDecision(mission, state, options[best]?.key ?? "a").state;
+      }
+      expect(positions.size, `semilla ${seed}`).toBe(3);
+    }
+  });
+
+  it("mezclar es determinista: la misma semilla da siempre el mismo orden", () => {
+    const first = mission.decisions[0];
+    if (first?.kind !== "choice") throw new Error("q01 debería ser de opciones fijas");
+    expect(shuffle(first.options, 7, 0)).toEqual(shuffle(first.options, 7, 0));
   });
 });

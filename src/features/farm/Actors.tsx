@@ -1,14 +1,17 @@
 "use client";
 
 import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { Group, Mesh } from "three";
 
 import type { CueId, DecisionId } from "@/engine/types";
+import type { Locale } from "@/i18n/locale";
+import { formatNumber } from "@/ui/format";
 import type { Vec3 } from "@/world/camera";
 import { useWorld } from "@/world/context";
 import { WorldTag } from "@/world/labels";
 import { Person } from "@/world/nature";
+import { Box } from "@/world/primitives";
 import { samplePath } from "@/world/path";
 
 import { BagStack, SampleFlag } from "./buildings";
@@ -25,6 +28,7 @@ import {
   YARD,
 } from "./layout";
 import { BagTruck, Combine, Drone, GrainTruck, Mover, Sprayer, TractorWith } from "./machines";
+import { trackVehicle } from "./follow";
 import { stepProgress } from "./visual";
 
 export interface SceneLabels {
@@ -38,6 +42,10 @@ export interface SceneLabels {
   tagTrucks: string;
   tagSale: string;
   tagInputs: string;
+  hopper: string;
+  sample: string;
+  grainMoisture: string;
+  locale: Locale;
   noAnalysis: string;
   noSeed: string;
   threshold: string;
@@ -57,10 +65,12 @@ const SCOUT_PATH: Vec3[] = [
   [-FIELD.width / 2 - 6, 0, -10],
   [-30, 0, -10],
   [20, 0, -30],
-  [PEST_SECTOR.x[0] + 10, 0, -40],
+  [PEST_SECTOR.x[0] - 10, 0, -40],
 ];
 
 const PEST_PASSES = passPath(PEST_SECTOR.x, PEST_SECTOR.z, 3, 4);
+/** En la aplicación focalizada, primero monitorea el técnico y después entra la pulverizadora. */
+const SCOUT_SHARE = 0.4;
 
 function useStep() {
   const scene = useScene();
@@ -88,6 +98,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
     <>
       {/* q01 · muestreo de suelo */}
       <Mover
+        track
         path={SAMPLE_POINTS}
         progress={() => progress("q01")}
         visible={() => playing("q01", "sampling")}
@@ -104,6 +115,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
 
       {/* q02 · fertilizante: llega el camión y la fertilizadora recorre el lote */}
       <Mover
+        track
         path={ROAD_TO_YARD}
         progress={() => Math.min(progress("q02") / 0.35, 1)}
         visible={() => playing("q02") && progress("q02") < 0.35}
@@ -112,6 +124,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
         <WorldTag text={labels.tagInputs} position={[0, 10, 0]} />
       </Mover>
       <Mover
+        track
         path={FIELD_PASSES}
         progress={() => Math.max((progress("q02") - 0.35) / 0.65, 0)}
         visible={() => playing("q02") && progress("q02") >= 0.35}
@@ -130,6 +143,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
 
       {/* q03 · preparación: rastra (labranza) o pulverizadora (barbecho de la siembra directa) */}
       <Mover
+        track
         path={FIELD_PASSES}
         progress={() => progress("q03")}
         visible={() => playing("q03", "till")}
@@ -139,6 +153,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
         <WorldTag text={labels.tagHarrow} tone="mine" position={[0, 16, 0]} />
       </Mover>
       <Mover
+        track
         path={FIELD_PASSES}
         progress={() => progress("q03")}
         visible={() => playing("q03", "notill")}
@@ -151,7 +166,12 @@ export function Actors({ labels }: { labels: SceneLabels }) {
       </Mover>
 
       {/* q04 · llegan las bolsas de semilla */}
-      <Mover path={ROAD_TO_YARD} progress={() => progress("q04")} visible={() => playing("q04")}>
+      <Mover
+        track
+        path={ROAD_TO_YARD}
+        progress={() => progress("q04")}
+        visible={() => playing("q04")}
+      >
         <BagTruck
           cab={palette.truck}
           bag={scene.cue?.quality === "best" ? palette.mine : palette.straw}
@@ -173,8 +193,36 @@ export function Actors({ labels }: { labels: SceneLabels }) {
         />
       ) : null}
 
+      {/* q05 · se carga la tolva: el operario lleva las bolsas y el contador suma los kilos */}
+      <Mover
+        path={LOADING_PATH}
+        progress={() => (Math.sin(progress("q05") * Math.PI * 7 - Math.PI / 2) + 1) / 2}
+        visible={() => playing("q05")}
+      >
+        <Person shirt={palette.mine} scale={2.6} />
+        <Box size={[0.9, 0.6, 0.9]} at={[0.6, 3.6, 0]} color={palette.straw} />
+      </Mover>
+      {playing("q05") ? (
+        <CounterTag
+          position={[YARD[0] + 16, 13, YARD[2] - 2]}
+          progress={() => progress("q05")}
+          text={(p) =>
+            `${labels.hopper}: ${formatNumber(Math.round((visual.seedKg * p) / 100) * 100, labels.locale)} kg`
+          }
+        />
+      ) : null}
+
+      {/* q06 · el técnico trata la semilla junto a la sembradora */}
+      {playing("q06") ? (
+        <group position={[YARD[0] + 10, 0, YARD[2] + 6]}>
+          <Person shirt={palette.mine} scale={2.6} />
+          <WorldTag text={labels.tagTechnician} tone="mine" position={[0, 8, 0]} />
+        </group>
+      ) : null}
+
       {/* q07 · siembra: la sembradora recorre el lote hasta donde alcanza la semilla */}
       <Mover
+        track
         path={FIELD_PASSES}
         progress={() => Math.min(progress("q07"), sownShare)}
         visible={() => playing("q07")}
@@ -189,6 +237,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
 
       {/* q08, q09, q10, q11 · pulverizadora en todo el lote */}
       <Mover
+        track
         path={FIELD_PASSES}
         progress={() => {
           const cue = scene.cue;
@@ -210,16 +259,20 @@ export function Actors({ labels }: { labels: SceneLabels }) {
 
       {/* q09 y q10 · el técnico recorre el lote */}
       <Mover
+        track
         path={SCOUT_PATH}
         progress={() => {
           const cue = scene.cue;
-          return cue ? progress(cue.decision) : 0;
+          if (!cue) return 0;
+          const p = progress(cue.decision);
+          return cue.id === "spray-spot" ? Math.min(p / SCOUT_SHARE, 1) : p;
         }}
         visible={() => {
+          // Solo cuando se decidió monitorear: si se aplica, sale la pulverizadora sin el técnico.
           const cue = scene.cue;
-          return (
-            !!cue && (cue.decision === "q09" || cue.decision === "q10") && playing(cue.decision)
-          );
+          if (!cue || !playing(cue.decision)) return false;
+          if (cue.id === "scout") return true;
+          return cue.id === "spray-spot" && progress(cue.decision) < SCOUT_SHARE;
         }}
       >
         <Person shirt={palette.mine} scale={4.5} />
@@ -227,9 +280,10 @@ export function Actors({ labels }: { labels: SceneLabels }) {
       </Mover>
       <PestMarker label={labels.threshold} />
       <Mover
+        track
         path={PEST_PASSES}
-        progress={() => progress("q10")}
-        visible={() => playing("q10", "spray-spot")}
+        progress={() => Math.max((progress("q10") - SCOUT_SHARE) / (1 - SCOUT_SHARE), 0)}
+        visible={() => playing("q10", "spray-spot") && progress("q10") >= SCOUT_SHARE}
       >
         <group scale={2.2}>
           <Sprayer color={palette.mine} />
@@ -239,7 +293,12 @@ export function Actors({ labels }: { labels: SceneLabels }) {
       </Mover>
 
       {/* q11 · el dron sobrevuela y deja el mapa de riesgo */}
-      <Mover path={FIELD_PASSES} progress={() => progress("q11")} visible={() => playing("q11")}>
+      <Mover
+        track
+        path={FIELD_PASSES}
+        progress={() => progress("q11")}
+        visible={() => playing("q11")}
+      >
         <Drone color={palette.mine} scale={3.6} position={[0, 18, 0]} />
         <WorldTag text={labels.tagDrone} tone="mine" position={[0, 28, 0]} />
       </Mover>
@@ -261,8 +320,34 @@ export function Actors({ labels }: { labels: SceneLabels }) {
           );
         }}
       />
-      {scene.cue?.decision === "q12" || (!visual.answered.includes("q12") && scene.day() >= 109) ? (
+      {(scene.cue?.decision === "q12" && scene.cue.quality !== "best") ||
+      (!visual.answered.includes("q12") && scene.day() >= 109) ? (
         <WorldTag text={labels.moisture} tone="alert" position={[-20, 12, 10]} />
+      ) : null}
+
+      {/* q12 · si se espera, la humedad del grano baja día a día hasta el rango comercial */}
+      {playing("q12", "harvest-ready") && scene.cue?.quality === "best" ? (
+        <CounterTag
+          position={[-20, 16, 10]}
+          tone="alert"
+          progress={() => progress("q12")}
+          text={(p) => `${labels.grainMoisture}: ${formatNumber(18 - 4.5 * p, labels.locale, 1)} %`}
+        />
+      ) : null}
+
+      {/* q13 · el técnico mide un metro de surco y estima el rendimiento */}
+      {playing("q13") ? (
+        <group position={[-30, 0, 20]}>
+          <Person shirt={palette.mine} scale={4.5} />
+          <Box size={[9, 0.12, 0.5]} at={[5.5, 0.4, 0]} color={palette.contractor} shadow={false} />
+          <CounterTag
+            position={[0, 16, 0]}
+            progress={() => progress("q13")}
+            text={(p) =>
+              `${labels.sample}: ${formatNumber(visual.yieldTHa * Math.min(p * 1.4, 1), labels.locale, 1)} t/ha`
+            }
+          />
+        </group>
       ) : null}
 
       {/* q14 · cosecha */}
@@ -276,6 +361,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
       {Array.from({ length: Math.min(visual.trips, 10) }, (_, i) => (
         <Mover
           key={i}
+          track={i === 0}
           path={FIELD_TO_ACOPIO}
           progress={() => Math.min(Math.max(progress("q15") * 1.8 - i * 0.09, 0), 1)}
           visible={() => {
@@ -292,6 +378,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
       {[0, 1, 2].map((i) => (
         <Mover
           key={i}
+          track={i === 0}
           path={ACOPIO_TO_PLANT}
           progress={() => Math.min(Math.max(progress("q17") * 1.5 - i * 0.18, 0), 1)}
           visible={() => {
@@ -308,6 +395,35 @@ export function Actors({ labels }: { labels: SceneLabels }) {
       ) : null}
     </>
   );
+}
+
+/** Del galpón a la sembradora: el operario carga las bolsas de semilla. */
+const LOADING_PATH: Vec3[] = [
+  [YARD[0] - 4, 0, YARD[2] + 22],
+  [YARD[0] + 12, 0, YARD[2] + 2],
+];
+
+/**
+ * Etiqueta con un número que avanza con la animación (kilos, humedad, t/ha). Solo vuelve a
+ * dibujar el texto cuando cambia, para no rehacer la textura cada cuadro.
+ */
+function CounterTag({
+  text,
+  progress,
+  position,
+  tone = "mine",
+}: {
+  text: (progress: number) => string;
+  progress: () => number;
+  position: Vec3;
+  tone?: "mine" | "alert";
+}) {
+  const [label, setLabel] = useState(() => text(0));
+  useFrame(() => {
+    const next = text(Math.min(Math.max(progress(), 0), 1));
+    if (next !== label) setLabel(next);
+  });
+  return <WorldTag text={label} tone={tone} position={position} />;
 }
 
 function isRaining(day: number, rained: boolean, eventShown: boolean): boolean {
@@ -375,6 +491,7 @@ function Harvester({ label }: { label: string }) {
     const current = group.current;
     if (!current) return;
     current.visible = playing("q14");
+    trackVehicle(current, current.visible);
     if (!current.visible) return;
     const p = Math.min(progress("q14"), scene.visual.sownShare);
     const sample = samplePath(FIELD_PASSES, p);
