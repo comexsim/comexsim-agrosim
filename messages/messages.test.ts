@@ -42,3 +42,23 @@ describe("textos de la misión", () => {
     }
   });
 });
+
+describe("redacción de las opciones", () => {
+  it("la opción recomendada no es casi siempre la más larga (no se adivina por el largo)", async () => {
+    const { AGRO_001 } = await import("@/data/agro-001");
+    for (const tree of [es, en]) {
+      const texts = tree.decisions as Record<string, Record<string, string>>;
+      let longest = 0;
+      let total = 0;
+      for (const decision of AGRO_001.decisions) {
+        if (decision.kind !== "choice") continue;
+        const own = texts[decision.id] ?? {};
+        const best = decision.options.find((option) => option.quality === "best")?.key ?? "a";
+        const lengths = decision.options.map((option) => (own[option.key] ?? "").length);
+        total += 1;
+        if ((own[best] ?? "").length === Math.max(...lengths)) longest += 1;
+      }
+      expect(longest / total).toBeLessThanOrEqual(0.25);
+    }
+  });
+});
