@@ -2,21 +2,14 @@
 
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
-import {
-  BoxGeometry,
-  Color,
-  ConeGeometry,
-  IcosahedronGeometry,
-  MeshStandardMaterial,
-  Object3D,
-  type InstancedMesh,
-} from "three";
+import { BoxGeometry, Color, MeshStandardMaterial, Object3D, type InstancedMesh } from "three";
 
 import { cropLook } from "@/engine/growth";
 import { useWorld } from "@/world/context";
 import { Ground } from "@/world/nature";
 
 import { useScene } from "./clock";
+import { soyPlantGeometry, weedGeometry } from "./plantShape";
 import { FIELD, PASSES, PEST_SECTOR, plantGrid, ROW_SPACING } from "./layout";
 import { stepProgress, type FieldVisual } from "./visual";
 
@@ -31,8 +24,8 @@ const tint = new Color();
 const mix = new Color();
 // Material blanco: el color de cada planta va en `instanceColor`.
 const instanceMaterial = new MeshStandardMaterial({ roughness: 0.85 });
-const plantGeometry = new IcosahedronGeometry(1, 0).translate(0, 0.75, 0);
-const weedGeometry = new ConeGeometry(0.7, 1.6, 5).translate(0, 0.8, 0);
+const plantGeometry = soyPlantGeometry();
+const weedTuft = weedGeometry();
 const strawGeometry = new BoxGeometry(1.6, 0.12, 0.35);
 const furrowGeometry = new BoxGeometry(1, 0.18, 0.45);
 
@@ -45,7 +38,7 @@ function inPestSector(x: number, z: number): boolean {
 }
 
 /** Nivel de malezas (0–1) según el día y el manejo. */
-function weedLevel(day: number, visual: FieldVisual): number {
+export function weedLevel(day: number, visual: FieldVisual): number {
   if (day < 6) return 0.35;
   if (visual.ground === "rough") return Math.max(0.6, day < 28 ? 0.6 : visual.weeds);
   // Tras el barbecho o la labranza, rebrotan desde el día 18 hasta la decisión q08.
@@ -230,7 +223,7 @@ export function SoyField() {
       />
       <instancedMesh
         ref={weeds}
-        args={[weedGeometry, instanceMaterial, weedSpots.length]}
+        args={[weedTuft, instanceMaterial, weedSpots.length]}
         frustumCulled={false}
       />
       <instancedMesh
