@@ -436,7 +436,10 @@
     "tagCombine": "Cosechadora contratada",
     "tagTrucks": "Camiones al acopio",
     "tagSale": "Entrega a la planta",
-    "tagInputs": "Insumos"
+    "tagInputs": "Insumos",
+    "hopper": "Tolva",
+    "sample": "Muestra",
+    "grainMoisture": "Humedad del grano"
   },
   "result": {
     "eyebrow": "Informe de campaña · AGRO #001",

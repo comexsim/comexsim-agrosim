@@ -4,6 +4,7 @@ import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
 import { useEffect, useMemo, useState } from "react";
 
+import { metrics } from "@/engine/campaign";
 import { useSceneLabels } from "@/features/farm/useSceneLabels";
 import { fieldVisual } from "@/features/farm/visual";
 import type { SceneSource } from "@/features/farm/clock";
@@ -21,7 +22,7 @@ import { Logbook } from "./Logbook";
 import { Result } from "./Result";
 import { RootLens } from "./RootLens";
 import { StageRail } from "./StageRail";
-import { dayAt, stationFor, useMission } from "./store";
+import { dayAt, MISSION, stationFor, useMission } from "./store";
 
 const FarmScene = dynamic(() => import("@/features/farm/FarmScene"), {
   ssr: false,
@@ -85,7 +86,7 @@ export function MissionScreen({ presentation = false }: { presentation?: boolean
     () => ({
       now: () => performance.now(),
       day: () => dayAt(timeline, performance.now()),
-      visual: fieldVisual(campaign, trips),
+      visual: fieldVisual(campaign, trips, metrics(MISSION, campaign).yieldTHa),
       cue,
     }),
     [campaign, cue, timeline, trips],

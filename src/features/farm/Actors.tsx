@@ -1,14 +1,17 @@
 "use client";
 
 import { useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import type { Group, Mesh } from "three";
 
 import type { CueId, DecisionId } from "@/engine/types";
+import type { Locale } from "@/i18n/locale";
+import { formatNumber } from "@/ui/format";
 import type { Vec3 } from "@/world/camera";
 import { useWorld } from "@/world/context";
 import { WorldTag } from "@/world/labels";
 import { Person } from "@/world/nature";
+import { Box } from "@/world/primitives";
 import { samplePath } from "@/world/path";
 
 import { BagStack, SampleFlag } from "./buildings";
@@ -38,6 +41,10 @@ export interface SceneLabels {
   tagTrucks: string;
   tagSale: string;
   tagInputs: string;
+  hopper: string;
+  sample: string;
+  grainMoisture: string;
+  locale: Locale;
   noAnalysis: string;
   noSeed: string;
   threshold: string;
@@ -175,6 +182,33 @@ export function Actors({ labels }: { labels: SceneLabels }) {
         />
       ) : null}
 
+      {/* q05 · se carga la tolva: el operario lleva las bolsas y el contador suma los kilos */}
+      <Mover
+        path={LOADING_PATH}
+        progress={() => (Math.sin(progress("q05") * Math.PI * 7 - Math.PI / 2) + 1) / 2}
+        visible={() => playing("q05")}
+      >
+        <Person shirt={palette.mine} scale={2.6} />
+        <Box size={[0.9, 0.6, 0.9]} at={[0.6, 3.6, 0]} color={palette.straw} />
+      </Mover>
+      {playing("q05") ? (
+        <CounterTag
+          position={[YARD[0] + 16, 13, YARD[2] - 2]}
+          progress={() => progress("q05")}
+          text={(p) =>
+            `${labels.hopper}: ${formatNumber(Math.round((visual.seedKg * p) / 100) * 100, labels.locale)} kg`
+          }
+        />
+      ) : null}
+
+      {/* q06 · el técnico trata la semilla junto a la sembradora */}
+      {playing("q06") ? (
+        <group position={[YARD[0] + 10, 0, YARD[2] + 6]}>
+          <Person shirt={palette.mine} scale={2.6} />
+          <WorldTag text={labels.tagTechnician} tone="mine" position={[0, 8, 0]} />
+        </group>
+      ) : null}
+
       {/* q07 · siembra: la sembradora recorre el lote hasta donde alcanza la semilla */}
       <Mover
         path={FIELD_PASSES}
@@ -266,8 +300,34 @@ export function Actors({ labels }: { labels: SceneLabels }) {
           );
         }}
       />
-      {scene.cue?.decision === "q12" || (!visual.answered.includes("q12") && scene.day() >= 109) ? (
+      {(scene.cue?.decision === "q12" && scene.cue.quality !== "best") ||
+      (!visual.answered.includes("q12") && scene.day() >= 109) ? (
         <WorldTag text={labels.moisture} tone="alert" position={[-20, 12, 10]} />
+      ) : null}
+
+      {/* q12 · si se espera, la humedad del grano baja día a día hasta el rango comercial */}
+      {playing("q12", "harvest-ready") && scene.cue?.quality === "best" ? (
+        <CounterTag
+          position={[-20, 16, 10]}
+          tone="alert"
+          progress={() => progress("q12")}
+          text={(p) => `${labels.grainMoisture}: ${formatNumber(18 - 4.5 * p, labels.locale, 1)} %`}
+        />
+      ) : null}
+
+      {/* q13 · el técnico mide un metro de surco y estima el rendimiento */}
+      {playing("q13") ? (
+        <group position={[-30, 0, 20]}>
+          <Person shirt={palette.mine} scale={4.5} />
+          <Box size={[9, 0.12, 0.5]} at={[5.5, 0.4, 0]} color={palette.contractor} shadow={false} />
+          <CounterTag
+            position={[0, 16, 0]}
+            progress={() => progress("q13")}
+            text={(p) =>
+              `${labels.sample}: ${formatNumber(visual.yieldTHa * Math.min(p * 1.4, 1), labels.locale, 1)} t/ha`
+            }
+          />
+        </group>
       ) : null}
 
       {/* q14 · cosecha */}
@@ -313,6 +373,35 @@ export function Actors({ labels }: { labels: SceneLabels }) {
       ) : null}
     </>
   );
+}
+
+/** Del galpón a la sembradora: el operario carga las bolsas de semilla. */
+const LOADING_PATH: Vec3[] = [
+  [YARD[0] - 4, 0, YARD[2] + 22],
+  [YARD[0] + 12, 0, YARD[2] + 2],
+];
+
+/**
+ * Etiqueta con un número que avanza con la animación (kilos, humedad, t/ha). Solo vuelve a
+ * dibujar el texto cuando cambia, para no rehacer la textura cada cuadro.
+ */
+function CounterTag({
+  text,
+  progress,
+  position,
+  tone = "mine",
+}: {
+  text: (progress: number) => string;
+  progress: () => number;
+  position: Vec3;
+  tone?: "mine" | "alert";
+}) {
+  const [label, setLabel] = useState(() => text(0));
+  useFrame(() => {
+    const next = text(Math.min(Math.max(progress(), 0), 1));
+    if (next !== label) setLabel(next);
+  });
+  return <WorldTag text={label} tone={tone} position={position} />;
 }
 
 function isRaining(day: number, rained: boolean, eventShown: boolean): boolean {

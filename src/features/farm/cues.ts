@@ -15,5 +15,8 @@ export const CUE_DURATION: Partial<Record<CueId, number>> = {
   trucks: 7500,
   dryer: 5500,
   sale: 6500,
+  "seed-load": 6000,
+  "yield-check": 6000,
+  "harvest-ready": 6000,
 };
 export const DEFAULT_CUE_DURATION = 4500;

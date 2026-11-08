@@ -1,3 +1,4 @@
+import { AGRO_001 } from "@/data/agro-001";
 import type { CampaignState, CueId, DecisionId, OptionKey, Quality } from "@/engine/types";
 
 /**
@@ -38,6 +39,10 @@ export interface FieldVisual {
   storage: "none" | "good" | "poor";
   rained: boolean;
   priceShift: "none" | "up" | "down";
+  /** Kilos de semilla comprados (q05), para el contador de la tolva. */
+  seedKg: number;
+  /** Rendimiento estimado (t/ha), para la estimación de la producción (q13). */
+  yieldTHa: number;
 }
 
 function key(state: CampaignState, id: DecisionId): OptionKey | null {
@@ -46,7 +51,15 @@ function key(state: CampaignState, id: DecisionId): OptionKey | null {
 
 const BAGS: Record<OptionKey, number> = { a: 80, b: 160, c: 200 };
 
-export function fieldVisual(state: CampaignState, trips: number): FieldVisual {
+/** Kilos de la opción de semilla elegida, tomados de la misión (nada del dominio en la escena). */
+function seedKgOf(state: CampaignState): number {
+  const answer = state.answers.q05;
+  const decision = AGRO_001.decisions.find((d) => d.id === "q05");
+  if (!answer || !decision || (decision.kind !== "choice" && decision.kind !== "calc")) return 0;
+  return decision.options.find((option) => option.key === answer.key)?.effects.seedKg ?? 0;
+}
+
+export function fieldVisual(state: CampaignState, trips: number, yieldTHa = 0): FieldVisual {
   const answered = Object.keys(state.answers) as DecisionId[];
   const prep = key(state, "q03");
   const weedsAnswer = key(state, "q08");
@@ -86,6 +99,8 @@ export function fieldVisual(state: CampaignState, trips: number): FieldVisual {
     storage: storageAnswer === null ? "none" : storageAnswer === "b" ? "good" : "poor",
     rained: state.events.includes("rain"),
     priceShift: priceLog ? (priceLog.key === "priceUp" ? "up" : "down") : "none",
+    seedKg: seedKgOf(state),
+    yieldTHa,
   };
 }
 
