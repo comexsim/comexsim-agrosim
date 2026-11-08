@@ -361,6 +361,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
       {Array.from({ length: Math.min(visual.trips, 10) }, (_, i) => (
         <Mover
           key={i}
+          track={i === 0}
           path={FIELD_TO_ACOPIO}
           progress={() => Math.min(Math.max(progress("q15") * 1.8 - i * 0.09, 0), 1)}
           visible={() => {
@@ -377,6 +378,7 @@ export function Actors({ labels }: { labels: SceneLabels }) {
       {[0, 1, 2].map((i) => (
         <Mover
           key={i}
+          track={i === 0}
           path={ACOPIO_TO_PLANT}
           progress={() => Math.min(Math.max(progress("q17") * 1.5 - i * 0.18, 0), 1)}
           visible={() => {
