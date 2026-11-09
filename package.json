@@ -5,7 +5,7 @@
   "description": "SIMA · AgroSim: demo frontend del simulador académico de agronegocios (propuesta para la UPSA).",
   "type": "module",
   "license": "UNLICENSED",
-  "packageManager": "pnpm@12.15.0",
+  "packageManager": "pnpm@12.18.0",
   "engines": {
     "node": ">=22"
   },
