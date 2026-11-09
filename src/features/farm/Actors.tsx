@@ -88,7 +88,7 @@ function useStep() {
 }
 
 /** Todos los actores de la campaña; cada uno decide si aparece según el paso en curso. */
-export function Actors({ labels }: { labels: SceneLabels }) {
+export function Actors({ labels, closeup = false }: { labels: SceneLabels; closeup?: boolean }) {
   const { palette } = useWorld();
   const { scene, progress, playing } = useStep();
   const { visual } = scene;
@@ -278,7 +278,8 @@ export function Actors({ labels }: { labels: SceneLabels }) {
         <Person shirt={palette.mine} scale={4.5} />
         <WorldTag text={labels.tagTechnician} tone="mine" position={[0, 13, 0]} />
       </Mover>
-      <PestMarker label={labels.threshold} />
+      {/* Con la lupa puesta, el anillo cortaría la vista: el umbral lo muestra el primer plano. */}
+      {closeup ? null : <PestMarker label={labels.threshold} />}
       <Mover
         track
         path={PEST_PASSES}

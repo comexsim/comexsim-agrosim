@@ -1,14 +1,17 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useEffect, useRef } from "react";
 
 import { currentDecision, metrics, optionsFor, promptParams } from "@/engine/campaign";
 import type { CampaignState, Decision, LogEntry, ResolvedOption } from "@/engine/types";
+import type { ActiveCue } from "@/features/farm/visual";
 import { Button } from "@/ui/Button";
 import { cx } from "@/ui/cx";
 import { AlertIcon, BulbIcon, CheckIcon } from "@/ui/icons";
 
 import { useFormat } from "./hooks";
+import { SpeedSwitch } from "./SpeedSwitch";
 import styles from "./Hud.module.css";
 import { MISSION, useMission } from "./store";
 
@@ -125,9 +128,8 @@ function Question() {
       ) : (
         <div className={styles.playing}>
           <p>{t("decision.playing")}</p>
-          <div className={styles.playBar}>
-            <i style={{ animationDuration: `${cue?.duration ?? 4000}ms` }} />
-          </div>
+          <PlayBar cue={cue} />
+          <SpeedSwitch />
           <Button variant="secondary" block onClick={() => skip(performance.now())}>
             {t("decision.skip")}
           </Button>
@@ -140,6 +142,30 @@ function Question() {
         </Button>
       ) : null}
     </section>
+  );
+}
+
+/**
+ * Barra del tiempo de la animación. Se dibuja cuadro a cuadro desde el reloj de la animación: si
+ * se cambia la velocidad a mitad de camino, sigue desde donde iba.
+ */
+function PlayBar({ cue }: { cue: ActiveCue | null }) {
+  const bar = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!cue) return;
+    let frame = 0;
+    const tick = () => {
+      const share = Math.min(Math.max((performance.now() - cue.startedAt) / cue.duration, 0), 1);
+      if (bar.current) bar.current.style.width = `${share * 100}%`;
+      if (share < 1) frame = requestAnimationFrame(tick);
+    };
+    frame = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(frame);
+  }, [cue]);
+  return (
+    <div className={styles.playBar}>
+      <i ref={bar} style={{ animation: "none" }} />
+    </div>
   );
 }
 

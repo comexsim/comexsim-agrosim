@@ -10,7 +10,7 @@ import { Ground } from "@/world/nature";
 
 import { useScene } from "./clock";
 import { soyPlantGeometry, weedGeometry } from "./plantShape";
-import { FIELD, PASSES, PEST_SECTOR, plantGrid, ROW_SPACING } from "./layout";
+import { FIELD, inCloseup, PASSES, PEST_SECTOR, plantGrid, ROW_SPACING } from "./layout";
 import { stepProgress, type FieldVisual } from "./visual";
 
 /**
@@ -46,7 +46,8 @@ export function weedLevel(day: number, visual: FieldVisual): number {
   return regrowth * visual.weeds;
 }
 
-export function SoyField() {
+/** `closeup`: la lupa está puesta; el parche lo dibuja `MacroPlot` con plantas detalladas. */
+export function SoyField({ closeup = false }: { closeup?: boolean }) {
   const { palette } = useWorld();
   const scene = useScene();
   const spots = useMemo(() => plantGrid(), []);
@@ -101,6 +102,7 @@ export function SoyField() {
       visual.rust,
       visual.ground,
       colors.crop.getHexString(),
+      closeup,
     ].join("|");
     if (key === signature.current) return;
     signature.current = key;
@@ -109,7 +111,7 @@ export function SoyField() {
     if (plantMesh) {
       spots.forEach((spot, i) => {
         const sown = spot.order < sow;
-        if (!sown) {
+        if (!sown || (closeup && inCloseup(spot.x, spot.z))) {
           scratch.scale.setScalar(0);
         } else if (look.height === 0) {
           // Recién sembrado: la línea del surco detrás de la sembradora, antes de la emergencia.
@@ -161,7 +163,8 @@ export function SoyField() {
       const burned = visual.ground === "rough" ? 0 : prep;
       weedSpots.forEach((spot, i) => {
         const cleared = (day < 18 && spot.order < burned) || (day >= 18 && spot.order < weedSpray);
-        const visible = !cleared && spot.noise < level;
+        const visible =
+          !cleared && spot.noise < level && !(closeup && inCloseup(spot.x + 0.6, spot.z));
         const s = visible ? (0.55 + spot.noise * 0.6) * Math.max(level, 0.5) : 0;
         scratch.position.set(spot.x + 0.6, 0, spot.z);
         scratch.rotation.set(0, spot.noise * 6, 0);

@@ -3,6 +3,7 @@
 import { useLocale } from "next-intl";
 import { useEffect, useState } from "react";
 
+import { cueAccelerated, cueBoundaries, type ActiveCue } from "@/features/farm/visual";
 import type { Locale } from "@/i18n/locale";
 import { formatMoney, formatNumber } from "@/ui/format";
 
@@ -32,4 +33,29 @@ export function useAnimatedDay(timeline: Timeline): number {
     return () => cancelAnimationFrame(frame);
   }, [timeline]);
   return day;
+}
+
+/**
+ * Si la animación en curso está en tiempo acelerado; cambia justo en los bordes de los tramos.
+ * Ninguna animación empieza acelerada, así que solo los temporizadores cambian el valor.
+ */
+export function useAccelerated(cue: ActiveCue | null): boolean {
+  const [mark, setMark] = useState<{ cue: ActiveCue | null; accelerated: boolean }>({
+    cue: null,
+    accelerated: false,
+  });
+  useEffect(() => {
+    if (!cue) return;
+    const now = performance.now();
+    const timers = [...cueBoundaries(cue), cue.startedAt + cue.duration]
+      .filter((at) => at > now)
+      .map((at) =>
+        window.setTimeout(
+          () => setMark({ cue, accelerated: cueAccelerated(cue, performance.now()) }),
+          at - now + 1,
+        ),
+      );
+    return () => timers.forEach((timer) => window.clearTimeout(timer));
+  }, [cue]);
+  return !!cue && mark.cue === cue && mark.accelerated;
 }

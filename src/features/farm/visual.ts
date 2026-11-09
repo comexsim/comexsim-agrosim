@@ -1,6 +1,8 @@
 import { AGRO_001 } from "@/data/agro-001";
 import type { CampaignState, CueId, DecisionId, OptionKey, Quality } from "@/engine/types";
 
+import type { Segment, Speed } from "./cues";
+
 /**
  * Lo que la finca tiene que mostrar según las decisiones tomadas: el puente entre el motor y la
  * escena. Puro; la escena solo lo dibuja.
@@ -14,6 +16,9 @@ export interface ActiveCue {
   /** Marca de tiempo de inicio (ms, `performance.now()`), para animar cuadro a cuadro. */
   startedAt: number;
   duration: number;
+  /** Tramos de la animación (velocidad normal); sin tramos, el avance es lineal. */
+  segments?: readonly Segment[];
+  speed?: Speed;
 }
 
 export interface FieldVisual {
@@ -111,8 +116,60 @@ export function stepProgress(
   decision: DecisionId,
   now: number,
 ): number {
-  if (cue?.decision === decision) {
-    return Math.min(Math.max((now - cue.startedAt) / cue.duration, 0), 1);
-  }
+  if (cue?.decision === decision) return cueProgress(cue, now);
   return visual.answered.includes(decision) ? 1 : 0;
+}
+
+/** Avance (0–1) de una animación en el instante `now`, tramo por tramo. */
+export function cueProgress(cue: ActiveCue, now: number): number {
+  const elapsed = now - cue.startedAt;
+  if (!cue.segments?.length) return Math.min(Math.max(elapsed / cue.duration, 0), 1);
+  if (elapsed <= 0) return 0;
+  let start = 0;
+  let from = 0;
+  for (const segment of cue.segments) {
+    if (elapsed < start + segment.ms) {
+      return from + (segment.to - from) * ((elapsed - start) / segment.ms);
+    }
+    start += segment.ms;
+    from = segment.to;
+  }
+  return 1;
+}
+
+/** Si la animación está en un tramo de tiempo acelerado. */
+export function cueAccelerated(cue: ActiveCue, now: number): boolean {
+  const elapsed = now - cue.startedAt;
+  let start = 0;
+  for (const segment of cue.segments ?? []) {
+    if (elapsed >= start && elapsed < start + segment.ms) return !!segment.fast;
+    start += segment.ms;
+  }
+  return false;
+}
+
+/** Instantes (ms, como `now`) en que empieza cada tramo después del primero. */
+export function cueBoundaries(cue: ActiveCue): number[] {
+  const marks: number[] = [];
+  let at = cue.startedAt;
+  for (const segment of (cue.segments ?? []).slice(0, -1)) {
+    at += segment.ms;
+    marks.push(at);
+  }
+  return marks;
+}
+
+/** Milisegundos desde el inicio en que unos tramos alcanzan el avance `progress`. */
+export function elapsedFor(segments: readonly Segment[], progress: number): number {
+  let start = 0;
+  let from = 0;
+  for (const segment of segments) {
+    if (progress <= segment.to) {
+      const span = segment.to - from;
+      return start + (span > 0 ? ((progress - from) / span) * segment.ms : 0);
+    }
+    start += segment.ms;
+    from = segment.to;
+  }
+  return start;
 }

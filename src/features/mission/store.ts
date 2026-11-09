@@ -12,10 +12,11 @@ import {
 } from "@/engine/campaign";
 import { summarize, type AttemptSummary } from "@/engine/report";
 import type { CampaignState, DecisionId, OptionKey, StationId } from "@/engine/types";
-import { CUE_DURATION, DEFAULT_CUE_DURATION, FOLLOW_CUES } from "@/features/farm/cues";
-import type { ActiveCue } from "@/features/farm/visual";
+import { cueSegments, FOLLOW_CUES, segmentsDuration, type Speed } from "@/features/farm/cues";
+import { cueProgress, elapsedFor, type ActiveCue } from "@/features/farm/visual";
 
 import { loadAttempts, saveAttempts } from "./attempts";
+import { loadSpeed, saveSpeed } from "./speed";
 
 /**
  * Estado de la pantalla de la misión. El motor es puro; aquí se suman el reloj de la interfaz
@@ -49,6 +50,8 @@ interface MissionStore {
   /** Modo Presentación: el guion lleva la misión y no cuenta como intento. */
   presenting: boolean;
   paused: boolean;
+  /** Velocidad de las animaciones: a paso real con tiempo acelerado, o corrida. */
+  speed: Speed;
   hydrate: () => void;
   begin: (now: number) => void;
   select: (key: OptionKey) => void;
@@ -61,6 +64,8 @@ interface MissionStore {
   startPresentation: () => void;
   stopPresentation: () => void;
   togglePause: () => void;
+  /** Cambia la velocidad; la animación en curso sigue desde donde iba. */
+  setSpeed: (speed: Speed, now: number) => void;
 }
 
 const mission = AGRO_001;
@@ -88,11 +93,13 @@ export const useMission = create<MissionStore>((set, get) => ({
   attempts: [],
   presenting: false,
   paused: false,
+  speed: "normal",
 
   hydrate: () => {
     const attempts = loadAttempts(mission.id);
-    if (get().presenting) set({ attempts });
-    else set({ attempts, campaign: createCampaign(mission, attempts.length) });
+    const speed = loadSpeed();
+    if (get().presenting) set({ attempts, speed });
+    else set({ attempts, speed, campaign: createCampaign(mission, attempts.length) });
   },
 
   begin: (now) => {
@@ -115,7 +122,9 @@ export const useMission = create<MissionStore>((set, get) => ({
         ? decision.options.find((o) => o.key === selected)
         : undefined;
     const cueId = staticOption?.cue ?? decision.cue;
-    const duration = CUE_DURATION[cueId] ?? DEFAULT_CUE_DURATION;
+    const { speed } = get();
+    const segments = cueSegments(cueId, speed);
+    const duration = segmentsDuration(segments);
     set({
       campaign: state,
       phase: "play",
@@ -127,6 +136,8 @@ export const useMission = create<MissionStore>((set, get) => ({
         quality: outcome.quality,
         startedAt: now,
         duration,
+        segments,
+        speed,
       },
       // Mientras se anima la decisión, el tiempo corre hasta el último evento que disparó.
       timeline: { from: decision.day, to: state.day, startedAt: now, duration },
@@ -204,6 +215,25 @@ export const useMission = create<MissionStore>((set, get) => ({
   },
 
   togglePause: () => set({ paused: !get().paused }),
+
+  setSpeed: (speed, now) => {
+    const { cue, phase, timeline } = get();
+    saveSpeed(speed);
+    if (phase !== "play" || !cue || cue.speed === speed) {
+      set({ speed });
+      return;
+    }
+    // Se rehace el reloj de la animación para que el avance siga igual en este instante.
+    const segments = cueSegments(cue.id, speed);
+    const duration = segmentsDuration(segments);
+    const startedAt = now - elapsedFor(segments, cueProgress(cue, now));
+    const share = Math.min(Math.max((now - timeline.startedAt) / timeline.duration, 0), 1);
+    set({
+      speed,
+      cue: { ...cue, segments, speed, duration, startedAt },
+      timeline: { ...timeline, duration, startedAt: now - share * duration },
+    });
+  },
 }));
 
 /** Día de campaña con decimales en el instante `now`, con aceleración suave. */
@@ -219,10 +249,14 @@ export function stationFor(
   campaign: CampaignState,
   last: LastDecision | null,
   cue: ActiveCue | null = null,
+  accelerated = false,
 ): StationId {
   if (phase === "briefing") return "farm";
   if (phase === "result") return "result";
-  if (phase === "play" && cue && FOLLOW_CUES.has(cue.id)) return "follow";
+  // La cámara acompaña a la máquina solo a paso real; en tiempo acelerado mira todo el lote.
+  if (phase === "play" && cue && FOLLOW_CUES.has(cue.id) && cue.speed !== "fast" && !accelerated) {
+    return "follow";
+  }
   if ((phase === "play" || phase === "feedback") && last) {
     return mission.decisions.find((d) => d.id === last.decision)?.station ?? "farm";
   }
